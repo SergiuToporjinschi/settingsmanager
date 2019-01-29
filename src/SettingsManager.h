@@ -1,8 +1,9 @@
 #ifndef SettingsManager_h
 #define SettingsManager_h
-
+#include <ArduinoJson.h>
 #include "Arduino.h"
 #include <map>
+
 #include "FS.h"
 
 class SettingsManager {
@@ -12,21 +13,23 @@ class SettingsManager {
     std::map <String, String> getSettings();
     void writeSettings(const String &fileName);
     void writeSettings(const String &fileName, const String &content);
-    static String stringify(std::map <String, String> &settings);
+    //    static String stringify(std::map <String, String> &settings);
 
-    String getString(String key);
-    const char *getChar(String key);
-    int getInt(String key);
-    long getLong(String key);
-    bool getBool(String key);
-    void setString(String key, String value);
-    void setInt(String key, int value);
-    void setLong(String key, long value);
-    void setBool(String key, bool value);
-  private:
-    std::map <String, String> settings;
-    void setValues(String &line);
+    String getString(String key, String defaultValue = "");
+    const char* getChar(String key, char* defaultValue = '\0');
+    int getInt(String key, int defaultValue = 0);
+    long getLong(String key, long defaultValue = 0);
+    float getFloat(String key, float defaultValue = 0);
+    double getDouble(String key, double defaultValue = 0);
+    bool getBool(String key, bool defaultValue = 0);
+    JsonVariant getVariant(String key);
+    JsonObject& getJsonObject(String key);
+    JsonArray& getJsonArray(String key);
     void populateSettings(File &file);
+  private:
+    JsonObject* root;
+    String getFileContent(File &file);
+    JsonObject* createJson(const char* payload);
     void openSPIFFS();
 };
 #endif

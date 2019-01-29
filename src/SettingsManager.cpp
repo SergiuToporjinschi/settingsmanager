@@ -1,40 +1,88 @@
-#define DEBUG_PRINT(x) Serial.println(x)
+#define DEBUGER
+#ifdef DEBUGER
+#define DBG(x) Serial.print(String("DBG-->") + String(x))
+#define DBGLN(x) Serial.println(String("DBG-->") + String(x))
+#else
+#define DBG(x)
+#define DBGLN(x)
+#endif
+
 #include "Arduino.h"
 #include "SettingsManager.h"
-
+/**
+   Reads the content of settings files given by path/name
+*/
 void SettingsManager::readSettings(String fileName) {
-  DEBUG_PRINT("Reading settings from: " + fileName);
+  DBGLN("Reading settings from: " + fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "r");
   if (!file) {
-    delay(1000);
-    DEBUG_PRINT("Could not open file");
+    delay(100);
+    DBGLN("Could not open file");
     SPIFFS.end();
     return;
   } else {
     populateSettings(file);
   }
-  DEBUG_PRINT("Closing file");
+  DBGLN("Closing file");
   file.close();
   SPIFFS.end();
 };
 
-void SettingsManager::writeSettings(const String &fileName) {
-  String content = SettingsManager::stringify(settings);
-  writeSettings(fileName, content);
+/**
+   Loads all the settings in current instance
+*/
+void SettingsManager::populateSettings(File &file) {
+  DBGLN("Populate settings");
+  root = createJson(getFileContent(file).c_str());
+  if (root == 0) {
+    DBGLN("Invalid JSON:");
+    return;
+  }
 };
 
-void SettingsManager::writeSettings(const String &fileName, const String &content) {
-  DEBUG_PRINT("Writing settings to: " + fileName);
+String SettingsManager::getFileContent(File &file) {
+  String content, jsonChars = "{},:[]";
+  char lastChr;
+  while (file.available()) {
+    char chr = (char)file.read();
+    if ( chr == '\n' || chr == '\r' || chr == '\t' || (jsonChars.indexOf(lastChr) >= 0 && chr == ' ') || (int)chr == 255) {
+      continue;
+    }
+    if (lastChr == ' ' && jsonChars.indexOf(chr) >= 0) {
+      content.trim();
+    }
+    content += chr;
+    lastChr = chr;
+  }
+  content.trim();
+  return content;
+}
+
+JsonObject* SettingsManager::createJson(const char* payload) {
+  DBGLN(payload);
+  DynamicJsonBuffer jsonBuffer(1300);
+  JsonObject& roots = jsonBuffer.parseObject(payload);
+  if (!roots.success()) {
+    DBGLN("Invalid JSON:");
+    DBGLN(payload);
+    return 0;
+  }
+  return &roots;
+}
+
+void SettingsManager::writeSettings(const String & fileName) {
+  JsonObject& p =  *root;
+  DBGLN("Writing settings to: " + fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "w");
   if (!file) {
     delay(1000);
+    DBGLN("Could not write  file");
   } else {
-    file.print("# written today\n");
-    file.print(content);
+    root->printTo(file);
   }
-  DEBUG_PRINT("Closing file");
+  DBGLN("Closing file");
   file.close();
   SPIFFS.end();
 };
@@ -42,86 +90,102 @@ void SettingsManager::writeSettings(const String &fileName, const String &conten
 void SettingsManager::openSPIFFS() {
   if (!SPIFFS.begin()) {
     delay(1000);
-    DEBUG_PRINT("Could not mount SPIFFS file system");
+    DBGLN("Could not mount SPIFFS file system");
   }
 };
 
-void SettingsManager::populateSettings(File &file) {
-  DEBUG_PRINT("Populate settings");
-  while (file.available()) {
-    String line = file.readStringUntil('\n');
-    line.trim();
-    DEBUG_PRINT(line);
-    if (line.length() != 0 && !line.startsWith("#")) {
-      int index = line.indexOf("#");
-      if (index > 0) {
-        line = line.substring(0, index);
-        line.trim();
+JsonVariant SettingsManager::getVariant(String key) {
+  JsonObject& p = *root;
+  JsonVariant item = p;
+  String k = key;
+  if (key.indexOf('.') > 0) {
+    int r = 0, i = 0;
+    for (i = 0; i < key.length(); i++ ) {
+      if (key[i] == '.') {
+        k = key.substring(r, i);
+        r = i + 1;
+        item = item[k];
+        if (!item.success()) {
+          DBGLN("Could not find config key: " + key.substring(0, i));
+          return "";
+        }
       }
-      setValues(line);
     }
+    k = key.substring(r, i);
   }
+  item = item[k];
+  if (!item.success()) {
+    DBGLN("Could not find config key: " + key);
+  }
+  return item;
 };
 
-void SettingsManager::setValues(String &line) {
-  int poz = line.indexOf("=");
-  String key = line.substring(0, poz);
-  String value = line.substring(poz + 1);
-  key.trim();
-  value.trim();
-  settings[key] = value;
+String SettingsManager::getString(String key, String defaultValue) {
+  JsonVariant item = getVariant(key);
+  Serial.println("DEFAULT: " + defaultValue);
+  return item | defaultValue;
 };
 
-String SettingsManager::stringify(std::map <String, String> &settings) {
-  String val = "";
-  for (std::map<String, String>::iterator it = settings.begin(); it != settings.end(); ++it)
-    val += it->first + "=" + it->second + '\n';
-  return val;
-};
-
-std::map <String, String> SettingsManager::getSettings() {
-  return settings;
-};
-
-const char *SettingsManager::getChar(String key) {
-  return settings[key].c_str();
-};
-
-String SettingsManager::getString(String key) {
-  return settings[key];
-};
-
-int SettingsManager::getInt(String key) {
-  return settings[key].toInt();
-};
-
-bool SettingsManager::getBool(String key) {
-  String value = settings[key];
-  value.trim();
-  value.toLowerCase();
-  return value == "true";
-};
-
-long SettingsManager::getLong(String key){
-  return atol(settings[key].c_str());
-};
-
-void SettingsManager::setString(String key, String value) {
-  settings[key] = value;
-};
-
-void SettingsManager::setInt(String key, int value) {
-  settings[key] = String(value);
-};
-
-void SettingsManager::setLong(String key, long value){
-  settings[key] = String(value);
-};
-
-void SettingsManager::setBool(String key, bool value) {
-  if (value) {
-    settings[key] = "true";
+const char* SettingsManager::getChar(String key, char* defaultValue) {
+  JsonVariant item = getVariant(key);
+  if (item.success()) {
+    return item.as<char*>();
   } else {
-    settings[key] =  "false";
+    return defaultValue;
   }
+};
+
+int SettingsManager::getInt(String key, int defaultValue) {
+  JsonVariant item = getVariant(key);
+  if (item.success()) {
+    return item.as<int>();
+  } else {
+    return defaultValue;
+  }
+};
+
+float SettingsManager::getFloat(String key, float defaultValue) {
+  JsonVariant item = getVariant(key);
+  if (item.success()) {
+    return item.as<float>();
+  } else {
+    return defaultValue;
+  }
+};
+
+double SettingsManager::getDouble(String key, double defaultValue) {
+  JsonVariant item = getVariant(key);
+  if (item.success()) {
+    return item.as<double>();
+  } else {
+    return defaultValue;
+  }
+};
+
+long SettingsManager::getLong(String key, long defaultValue) {
+  JsonVariant item = getVariant(key);
+  if (item.success()) {
+    return item.as<long>();
+  } else {
+    return defaultValue;
+  }
+};
+
+bool SettingsManager::getBool(String key, bool defaultValue) {
+  JsonVariant item = getVariant(key);
+  if (item.success()) {
+    return item.as<bool>();
+  } else {
+    return defaultValue;
+  }
+};
+
+JsonObject& SettingsManager::getJsonObject(String key) {
+  JsonVariant item = getVariant(key);
+  return item.as<JsonObject&>();
+};
+
+JsonArray& SettingsManager::getJsonArray(String key) {
+  JsonVariant item = getVariant(key);
+  return item.as<JsonArray&>();
 };
