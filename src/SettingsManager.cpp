@@ -135,6 +135,14 @@ const char* SettingsManager::getChar(String key, char* defaultValue) {
   }
 };
 
+const char SettingsManager::getChar(String key, char defaultValue) {
+  JsonVariant item = getVariant(key);
+  if (item.success()) {
+    return item.as<char>();
+  } else {
+    return defaultValue;
+  }
+};
 int SettingsManager::getInt(String key, int defaultValue) {
   JsonVariant item = getVariant(key);
   if (item.success()) {

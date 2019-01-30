@@ -13,10 +13,9 @@ class SettingsManager {
     std::map <String, String> getSettings();
     void writeSettings(const String &fileName);
     void writeSettings(const String &fileName, const String &content);
-    //    static String stringify(std::map <String, String> &settings);
-
     String getString(String key, String defaultValue = "");
     const char* getChar(String key, char* defaultValue = '\0');
+    const char getChar(String key, char defaultValue = ' ');
     int getInt(String key, int defaultValue = 0);
     long getLong(String key, long defaultValue = 0);
     float getFloat(String key, float defaultValue = 0);
