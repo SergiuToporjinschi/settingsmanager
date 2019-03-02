@@ -9,12 +9,11 @@ void SettingsManager::readSettings(char * fileName) {
   openSPIFFS();
   File file = SPIFFS.open(fileName, "r");
   if (!file) {
-    delay(100);
     DBGLN("Could not open file");
     SPIFFS.end();
     return;
   } else {
-    char js[600];
+    char js[600] = {0};
     getFileContent(js, file);
     Serial.println("s");
     Serial.println(js);
