@@ -7,6 +7,9 @@
 
 #include "FS.h"
 
+#define SM_KEY_NOT_FOUND       1
+#define SM_ERROR              -1
+#define SM_SUCCESS             0
 class SettingsManager {
   public:
     SettingsManager() {};
@@ -15,7 +18,8 @@ class SettingsManager {
     void writeSettings(const char * fileName);
     //    void writeSettings(const String &fileName, const String &content);
     String getString(const char * key, const String defaultValue);
-    signed int getInt(const char * key, const signed int defaultValue);
+    int setInt(const char * key, const signed int value);
+    signed int getInt(const char * key, const signed int defaultValue = 0);
     signed short getShort(const char * key, const signed short defaultValue);
     signed long getLong(const char * key, const signed long defaultValue);
     unsigned long getLong(const char * key, const unsigned long defaultValue);

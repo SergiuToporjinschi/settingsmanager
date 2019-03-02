@@ -8,12 +8,12 @@
 #define DEBUG_BEGIN
 #endif
 
-
+SettingsManager sm;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   delay(5000);
-  SettingsManager sm;
+
   sm.readSettings("/config.json");
 
 
@@ -48,23 +48,15 @@ void setup() {
   } else {
     DBGLN("no ob");
   }
-  //  JsonObject& js = sm.getJsonObject("mqtt.internalTopics");
-  //  serializeJson(js, Serial);
+
 }
 
 void loop() {
+  int pin = sm.getInt("ledPin");
+  sm.setInt("ledPin", pin);
   delay(1000);
-
-  //sm.writeSettings(F("/conf.json"));
-  //Serial.println("********************New File*********************");
-  //sm.readSettings(F("/conf.json"));
-  //  auto settings = sm.getSettings();
-  //  Serial.println(SettingsManager::stringify(settings));
-  //
-  //  sm.setString("test", "testString");
-  //  sm.setBool("booleanTest", true);
-  //  sm.setInt("intTest", 2333);
-  //  sm.writeSettings("/settings.cfg");
-  //  auto set = sm.getSettings();
-  //  Serial.println(SettingsManager::stringify(set));
+  Serial.println("modified ledPins: " + String(sm.getInt("ledPin")));
+  delay(1000);
+  sm.writeSettings("/config.json");
+  delay(1000);
 }

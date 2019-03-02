@@ -97,6 +97,7 @@ void SettingsManager::writeSettings(const char * fileName) {
   if (!file) {
     DBGLN("Could not write  file");
   } else {
+    serializeJsonPretty(root, Serial);
     auto err = serializeJsonPretty(root, file);
     if (err) {
       DBGLN("Could not serialize json:");
@@ -127,7 +128,15 @@ JsonArray SettingsManager::getJsonArray(const char * key) {
   }
 }
 
-signed int SettingsManager::getInt(const char * key, const signed int defaultValue = 0) {
+int SettingsManager::setInt(const char * key, const signed int value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+signed int SettingsManager::getInt(const char * key, const signed int defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed int>();
