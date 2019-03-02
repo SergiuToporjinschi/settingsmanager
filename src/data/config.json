@@ -1,0 +1,32 @@
+{
+ "ledPin":13,
+ "sketchVersion":"1.0",
+ "updateServer":"url for update",
+ "esp" : {
+	"delayTime": 300
+ },
+ "wlan": {
+	"hostName": "hostName of esp",
+	"ssid": "network sidd ",
+	"password": "network password"
+ },
+ "mqtt": {
+	"clientId": "mqttClientid",
+	"server": "mqtt server ip",
+	"port": "9999",
+	"user": "user mqtt",
+	"password": "password mqtt",
+	"status": {
+		"topic": "topic for status"
+	},
+	"internalTopics" : {
+		"update": "update topic",
+		"settings": "Settings topic",
+		"cmd": "somthing/cmd"
+	}
+ },
+ "process": {
+	"topic": "other topic",
+	"interval": 1000
+ }
+}
