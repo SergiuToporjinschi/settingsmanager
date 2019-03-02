@@ -32,7 +32,7 @@ class SettingsManager {
   private:
     DynamicJsonDocument doc = DynamicJsonDocument(1300);
     JsonObject root;
-    String getFileContent(File &file);
+    void getFileContent(char* content, File &file);
     void createJson(const char* payload);
     void openSPIFFS();
 };

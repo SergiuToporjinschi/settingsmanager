@@ -14,29 +14,42 @@ void SettingsManager::readSettings(char * fileName) {
     SPIFFS.end();
     return;
   } else {
-    createJson(getFileContent(file).c_str());
+    char js[600];
+    getFileContent(js, file);
+    Serial.println("s");
+    Serial.println(js);
+    createJson(js);
   }
   DBGLN("Closing file");
   file.close();
   SPIFFS.end();
-};
+}
 
-String SettingsManager::getFileContent(File &file) {
-  String content, jsonChars = "{},:[]";
+void SettingsManager::getFileContent(char* content, File &file) {
+  char jsonChars[7] = "{},:[]";
   char lastChr;
+  int len = 0;
   while (file.available()) {
     char chr = (char)file.read();
-    if ( chr == '\n' || chr == '\r' || chr == '\t' || (jsonChars.indexOf(lastChr) >= 0 && chr == ' ') || (int)chr == 255) {
+    if (chr == '\n' || chr == '\r' || chr == '\t' || (strchr(jsonChars, lastChr) != NULL && chr == ' ') || (int) chr == 255) {
       continue;
     }
-    if (lastChr == ' ' && jsonChars.indexOf(chr) >= 0) {
-      content.trim();
+    if ((int)lastChr == 32 && strchr(jsonChars, chr) != NULL) {
+      content[strlen(content) - 1] = '\000';
     }
-    content += chr;
+    content[strlen(content)] = chr;
+    content[strlen(content) + 1] = '\000';
     lastChr = chr;
   }
-  content.trim();
-  return content;
+}
+
+void SettingsManager::createJson(const char* payload) {
+  DeserializationError err = deserializeJson(doc, payload);
+  if (err) {
+    DBGLN("Invalid JSON:");
+    return;
+  }
+  root = doc.as<JsonObject>();
 }
 
 void SettingsManager::openSPIFFS() {
@@ -44,17 +57,6 @@ void SettingsManager::openSPIFFS() {
     delay(100);
     DBGLN("Could not mount SPIFFS file system");
   }
-};
-
-
-void SettingsManager::createJson(const char* payload) {
-  DBGLN(payload);
-  DeserializationError err = deserializeJson(doc, payload);
-  if (err) {
-    DBGLN("Invalid JSON:");
-    return;
-  }
-  root = doc.as<JsonObject>();
 }
 
 JsonVariant SettingsManager::getJsonVariant(const char * key) {

@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 #define DEBUGER
+#define DEBUGER_MEM
 #define SERIAL_BAUDRATE         9600
 
 
