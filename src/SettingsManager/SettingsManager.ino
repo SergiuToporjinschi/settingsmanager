@@ -69,7 +69,7 @@ void getTests() {
     serializeJsonPretty(ob, Serial);
     Serial.println("");
   } else {
-    Serial.println("no ob");
+    Serial.println("getTests: no ob");
   }
 }
 
@@ -91,11 +91,28 @@ void readWriteTest() {
   sm.writeSettings("/config.json");
 }
 
+void loadSettingsTest() {
+  sm.loadJson("{\"testInLoadingJson\":\"this is a string value\",\"Level1\":{\"Level2Key\":12,\"Level2Test\":true,\"Level3\":{\"float\":23.5}}}");
+  JsonObject ob = sm.getRoot();
+  if (!ob.isNull()) {
+    serializeJsonPretty(ob, Serial);
+    Serial.println("");
+  } else {
+    Serial.println("loadSetti: no ob");
+  }
+  Serial.println("String testInLoadingJson: " + sm.getString("testInLoadingJson"));
+  Serial.println("int Level1.Level2Key: " + String(sm.getInt("Level1.Level2Key", 199)));
+  Serial.println("double Level1.Level3.float: " + String(sm.getDouble("Level1.Level3.float", 75.299D)));
+  Serial.println("bool Level1.Level2Test: " + String(sm.getBool("Level1.Level2Test", true)));
+}
+
 void loop() {
-  delay(1000);
-  setTest();
+  //  delay(1000);
+  //  setTest();
   delay(1000);
   getTests();
   delay(1000);
   readWriteTest();
+  delay(1000);
+  loadSettingsTest();
 }

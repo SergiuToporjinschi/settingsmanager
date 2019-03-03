@@ -22,21 +22,21 @@ class SettingsManager {
     signed int getInt(const char * key, const signed int defaultValue = 0);
     unsigned int getUInt(const char * key, const unsigned int defaultValue = 0);
 
-    signed short getShort(const char * key, const signed short defaultValue);
-    unsigned short getUShort(const char * key, const unsigned short defaultValue);
+    signed short getShort(const char * key, const signed short defaultValue = 0);
+    unsigned short getUShort(const char * key, const unsigned short defaultValue = 0);
 
-    signed long getLong(const char * key, const signed long defaultValue);
-    unsigned long getULong(const char * key, const unsigned long defaultValue);
+    signed long getLong(const char * key, const signed long defaultValue = 0L);
+    unsigned long getULong(const char * key, const unsigned long defaultValue = 0L);
 
-    char getCChar(const char * key, const char defaultValue);
-    signed char getChar(const char * key, const signed char defaultValue);
-    unsigned char getUChar(const char * key, const unsigned char defaultValue);
+    char getCChar(const char * key, const char defaultValue = '\0');
+    signed char getChar(const char * key, const signed char defaultValue = '\0');
+    unsigned char getUChar(const char * key, const unsigned char defaultValue = '\0');
 
-    const char * getChar(const char * key, const char * defaultValue);
-    String getString(const char * key, const String defaultValue);
-    float getFloat(const char * key, const float defaultValue);
-    double getDouble(const char * key, const double defaultValue);
-    bool getBool(const char * key, const bool defaultValue);
+    const char * getChar(const char * key, const char * defaultValue = '\0');
+    String getString(const char * key, const String defaultValue = "");
+    float getFloat(const char * key, const float defaultValue = 0.0F);
+    double getDouble(const char * key, const double defaultValue = 0.0D);
+    bool getBool(const char * key, const bool defaultValue = false);
 
     int setInt(const char * key, const signed int value);
     int setUInt(const char * key, const unsigned int value);
@@ -60,11 +60,11 @@ class SettingsManager {
     JsonObject getRoot() {
       return root;
     };
+    void loadJson(const char* payload);
   private:
     DynamicJsonDocument doc = DynamicJsonDocument(1300);
     JsonObject root;
     void getFileContent(char* content, File &file);
-    void createJson(const char* payload);
     void openSPIFFS();
 };
 #endif

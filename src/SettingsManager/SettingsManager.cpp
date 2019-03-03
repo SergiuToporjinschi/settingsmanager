@@ -17,7 +17,7 @@ void SettingsManager::readSettings(char * fileName) {
     getFileContent(js, file);
     Serial.println("s");
     Serial.println(js);
-    createJson(js);
+    loadJson(js);
   }
   DBGLN("Closing file");
   file.close();
@@ -60,7 +60,7 @@ void SettingsManager::getFileContent(char* content, File &file) {
   }
 }
 
-void SettingsManager::createJson(const char* payload) {
+void SettingsManager::loadJson(const char* payload) {
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
     DBGLN("Invalid JSON:");
@@ -145,7 +145,7 @@ unsigned int SettingsManager::getUInt(const char * key, const unsigned int defau
   }
 }
 
-signed short SettingsManager::getShort(const char * key, const signed short defaultValue = 0) {
+signed short SettingsManager::getShort(const char * key, const signed short defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed short>();
@@ -154,7 +154,7 @@ signed short SettingsManager::getShort(const char * key, const signed short defa
   }
 }
 
-unsigned short SettingsManager::getUShort(const char * key, const unsigned short defaultValue = 0) {
+unsigned short SettingsManager::getUShort(const char * key, const unsigned short defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<unsigned short>();
@@ -163,7 +163,7 @@ unsigned short SettingsManager::getUShort(const char * key, const unsigned short
   }
 }
 
-signed long SettingsManager::getLong(const char * key, const signed long defaultValue = 0L) {
+signed long SettingsManager::getLong(const char * key, const signed long defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed long>();
@@ -172,7 +172,7 @@ signed long SettingsManager::getLong(const char * key, const signed long default
   }
 }
 
-unsigned long SettingsManager::getULong(const char * key, const unsigned long defaultValue = 0L) {
+unsigned long SettingsManager::getULong(const char * key, const unsigned long defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<unsigned long>();
@@ -181,7 +181,7 @@ unsigned long SettingsManager::getULong(const char * key, const unsigned long de
   }
 }
 
-char SettingsManager::getCChar(const char * key, const char defaultValue = '\0') {
+char SettingsManager::getCChar(const char * key, const char defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     const char * x = item.as<const char*>();
@@ -191,7 +191,7 @@ char SettingsManager::getCChar(const char * key, const char defaultValue = '\0')
   }
 }
 
-signed char SettingsManager::getChar(const char * key, const signed char defaultValue = '\0') {
+signed char SettingsManager::getChar(const char * key, const signed char defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed char>();
@@ -200,7 +200,7 @@ signed char SettingsManager::getChar(const char * key, const signed char default
   }
 }
 
-unsigned char SettingsManager::getUChar(const char * key, const unsigned char defaultValue = '\0') {
+unsigned char SettingsManager::getUChar(const char * key, const unsigned char defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<unsigned char>();
@@ -209,7 +209,7 @@ unsigned char SettingsManager::getUChar(const char * key, const unsigned char de
   }
 }
 
-const char * SettingsManager::getChar(const char * key, const char * defaultValue = "") {
+const char * SettingsManager::getChar(const char * key, const char * defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<char*>();
@@ -218,7 +218,7 @@ const char * SettingsManager::getChar(const char * key, const char * defaultValu
   }
 }
 
-String SettingsManager::getString(const char * key, const String defaultValue = "") {
+String SettingsManager::getString(const char * key, const String defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<String>();
@@ -227,7 +227,7 @@ String SettingsManager::getString(const char * key, const String defaultValue = 
   }
 }
 
-float SettingsManager::getFloat(const char * key, const float defaultValue = 0.0F) {
+float SettingsManager::getFloat(const char * key, const float defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<float>();
@@ -236,7 +236,7 @@ float SettingsManager::getFloat(const char * key, const float defaultValue = 0.0
   }
 }
 
-double SettingsManager::getDouble(const char * key, const double defaultValue = 0) {
+double SettingsManager::getDouble(const char * key, const double defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<double>();
@@ -245,7 +245,7 @@ double SettingsManager::getDouble(const char * key, const double defaultValue = 
   }
 }
 
-bool SettingsManager::getBool(const char * key, const bool defaultValue = false) {
+bool SettingsManager::getBool(const char * key, const bool defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<bool>();
