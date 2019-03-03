@@ -24,7 +24,7 @@
   
 */
 
-#include "macros.h"
+
 #include "SettingsManager.h"
 
 #define DEBUGER
