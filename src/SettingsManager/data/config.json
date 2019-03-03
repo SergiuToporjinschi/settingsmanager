@@ -23,6 +23,11 @@
 	}
  },
  "ledPin":13,
+ "charTestN": 84,
+ "charTest": "t",
+ "floatTest": 12.33,
+ "doubleTest": 32.3223,
+ "boolTest": true,
  "sketchVersion":"1.0",
  "updateServer":"url for update",
  "process": {
