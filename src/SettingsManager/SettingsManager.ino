@@ -73,6 +73,15 @@ void getTests() {
   }
 }
 
+void setTest() {
+  Serial.println ("should increment LedPin int");
+  sm.readSettings("/config.json");
+  int res = sm.setString("updateServer", "Other Test");
+  Serial.print("WriteResult:"); Serial.println(res);
+  sm.setInt("ledPin", 15);
+  sm.writeSettings("/config.json");
+}
+
 void readWriteTest() {
   Serial.println ("should increment LedPin int");
   sm.readSettings("/config.json");
@@ -83,6 +92,8 @@ void readWriteTest() {
 }
 
 void loop() {
+  delay(1000);
+  setTest();
   delay(1000);
   getTests();
   delay(1000);

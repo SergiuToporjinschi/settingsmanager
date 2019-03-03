@@ -127,15 +127,6 @@ JsonArray SettingsManager::getJsonArray(const char * key) {
   }
 }
 
-int SettingsManager::setInt(const char * key, const int value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
-    return item.set(value) ? SM_SUCCESS : SM_ERROR;
-  }
-}
-
 signed int SettingsManager::getInt(const char * key, const signed int defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
@@ -260,5 +251,131 @@ bool SettingsManager::getBool(const char * key, const bool defaultValue = false)
     return item.as<bool>();
   } else {
     return defaultValue;
+  }
+}
+
+int SettingsManager::setInt(const char * key, const signed int value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setUInt(const char * key, const unsigned int value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setShort(const char * key, const signed short value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setUShort(const char * key, const unsigned short value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setLong(const char * key, const signed long value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setULong(const char * key, const unsigned long value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setCChar(const char * key, const char value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setChar(const char * key, const signed char value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setUChar(const char * key, const unsigned char value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setChar(const char * key, const char * value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setString(const char * key, const String value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setFloat(const char * key, const float value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setDouble(const char * key, const double value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  }
+}
+
+int SettingsManager::setBool(const char * key, const bool value) {
+  JsonVariant item = getJsonVariant(key);
+  if (item.isNull()) {
+    return SM_KEY_NOT_FOUND;
+  } else {
+    return item.set(value) ? SM_SUCCESS : SM_ERROR;
   }
 }
