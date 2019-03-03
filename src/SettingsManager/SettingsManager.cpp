@@ -1,11 +1,46 @@
+/*
+
+  SerialTrigger 0.1.0
+
+  SerialTrigger
+
+  Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+#ifdef DEBUGER
+#ifndef DBGLN
+#define DBGLN(x) Serial.println(x);
+#endif
+#ifndef DBG
+#define DBG(x) Serial.print(x);
+#endif
+#else
+#define DBGLN
+#define DBG
+#endif
+
 #include "Arduino.h"
 #include "SettingsManager.h"
 
 /**
-   Reads the content of settings files given by path/name
+    Reads the content of settings file given by path/name
 */
 void SettingsManager::readSettings(char * fileName) {
-  DBGF("Reading settings from: %s", fileName);
+  DBG("Reading settings from: "); DBGLN(fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "r");
   if (!file) {
@@ -15,8 +50,6 @@ void SettingsManager::readSettings(char * fileName) {
   } else {
     char js[JSON_LEN] = {0};
     getFileContent(js, file);
-    Serial.println("s");
-    Serial.println(js);
     loadJson(js);
   }
   DBGLN("Closing file");
@@ -24,8 +57,11 @@ void SettingsManager::readSettings(char * fileName) {
   SPIFFS.end();
 }
 
+/**
+    Writes the content of settings to a file given by path/name
+*/
 void SettingsManager::writeSettings(const char * fileName) {
-  DBGF("Writing settings to: %s", fileName);
+  DBG("Writing settings to: "); DBGLN(fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "w");
   if (!file) {
@@ -42,13 +78,16 @@ void SettingsManager::writeSettings(const char * fileName) {
   SPIFFS.end();
 }
 
+/**
+   Reads the file content
+*/
 void SettingsManager::getFileContent(char* content, File &file) {
   char jsonChars[7] = "{},:[]";
   char lastChr;
   int len = 0;
   while (file.available()) {
     char chr = (char)file.read();
-    if (chr == '\n' || chr == '\r' || chr == '\t' || (strchr(jsonChars, lastChr) != NULL && chr == ' ') || (int) chr == 255) {
+    if (chr == 10 || chr == '\r' || chr == '\t' || (strchr(jsonChars, lastChr) != NULL && chr == ' ') || (int) chr == 255) {
       continue;
     }
     if ((int)lastChr == 32 && strchr(jsonChars, chr) != NULL) {
@@ -60,6 +99,9 @@ void SettingsManager::getFileContent(char* content, File &file) {
   }
 }
 
+/**
+   Loads a json and is stored in json structure
+*/
 void SettingsManager::loadJson(const char* payload) {
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
@@ -69,6 +111,9 @@ void SettingsManager::loadJson(const char* payload) {
   root = doc.as<JsonObject>();
 }
 
+/**
+   Open file
+*/
 void SettingsManager::openSPIFFS() {
   if (!SPIFFS.begin()) {
     delay(100);
@@ -76,6 +121,9 @@ void SettingsManager::openSPIFFS() {
   }
 }
 
+/**
+   Returns the JsonVariant of a given key
+*/
 JsonVariant SettingsManager::getJsonVariant(const char * key) {
   if (root.containsKey(key)) {
     return root.getMember(key);
@@ -85,7 +133,7 @@ JsonVariant SettingsManager::getJsonVariant(const char * key) {
 
   char * k = strchr(_key, '.');
   if (k == nullptr) {
-    Serial.print("Key not found:"); Serial.println(key);
+    DBG("Key not found:"); DBGLN(key);
     JsonVariant vr;
     return vr;
   }
@@ -107,6 +155,9 @@ JsonVariant SettingsManager::getJsonVariant(const char * key) {
   return node;
 };
 
+/**
+ * Returns the JsonObject stored to a specific key
+ */
 JsonObject SettingsManager::getJsonObject(const char * key) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
@@ -117,6 +168,9 @@ JsonObject SettingsManager::getJsonObject(const char * key) {
   }
 }
 
+/**
+ * Returns the JsonArray stored to a specific key
+ */
 JsonArray SettingsManager::getJsonArray(const char * key) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
