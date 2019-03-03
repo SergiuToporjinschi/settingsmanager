@@ -1,8 +1,6 @@
 /*
 
-  SerialTrigger 0.1.0
-
-  SerialTrigger
+  SettingsManager 1.0.0
 
   Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
 
@@ -18,7 +16,7 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+  
   dependency:
   ArduinoJson: https://arduinojson.org/
   

@@ -1,8 +1,6 @@
 /*
 
-  SerialTrigger 0.1.0
-
-  SerialTrigger
+  SettingsManager 1.0.0
 
   Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
 
