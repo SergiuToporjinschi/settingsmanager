@@ -1,6 +1,8 @@
 # Settings Manager
 
 Intarface for reading, writing and managing settings in JSON format on SPIFFS.
+# Dependency 
+- [ArduinoJson V6](https://arduinojson.org/v6/api/jsonobject/)
 
 # Settings file
 ```json
