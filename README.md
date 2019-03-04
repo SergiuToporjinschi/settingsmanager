@@ -1,1 +1,106 @@
-# settingsmanager
+# Settings Manager
+
+Intarface for reading, writing and managing settings in JSON format on SPIFFS.
+
+# Settings file
+```json
+{
+ "esp" : {
+	"delayTime": 300
+ },
+ "wlan": {
+	"hostName": "hostName of esp",
+	"ssid": "network sidd ",
+	"password": "network password"
+ },
+ "mqtt": {
+	"clientId": "mqttClientid",
+	"server": "127.0.0.1",
+	"port": "9999",
+	"user": "mqttUser",
+	"password": "mqttPassword",
+	"status": {
+		"topic": "topic/for/status"
+	},
+	"internalTopics" : {
+		"update": "update/topic",
+		"settings": "Settings/topic",
+		"cmd": "cmd/topic"
+	}
+ },
+ "ledPin":13,
+ "sketchVersion":"1.0",
+ "updateServer":"http://testUpdateServer.com",
+ "process": {
+	"topic": "other/topic",
+	"interval": 1000
+ }
+}
+```
+# Syntax
+For getting value o a key you can call ``` sm.getInt(<path/key>[, defaultValue]) ``` The default value will be returned if the ```path/key``` has not been found.
+
+# Examples
+Reading/loading settings from file;
+```Cpp
+#include "SettingsManager.h"
+
+SettingsManager sm; //Initialize
+
+void setup() {
+    Serial.begin(115200);
+    sm.readSettings("/config.json"); //Loading json from file config.json
+}
+void loop(){
+    Serial.println("int ledPin: "); 
+    Serial.print(sm.getInt("ledPin", 99)); //get the int value from json root
+    Serial.println("Test getJsonVariant");
+    
+    JsonObject vr = sm.getJsonVariant("mqtt.status");
+    if (!vr.isNull()) {
+        serializeJsonPretty(vr, Serial);
+        Serial.println("");
+    } else {
+        Serial.println("no variant");
+    }
+}
+```
+
+Loading json from a string
+```Cpp
+#include "SettingsManager.h"
+
+SettingsManager sm; //Initialize
+
+void setup() {
+    Serial.begin(115200);
+    sm.readSettings("/config.json"); //Loading json from file config.json
+}
+void loop(){
+    sm.loadJson("{\"testInLoadingJson\":\"this is a string value\",\"Level1\":{\"Level2Key\":12,\"Level2Test\":true,\"Level3\":{\"float\":23.5}}}");
+    JsonObject ob = sm.getRoot();
+    if (!ob.isNull()) {
+        serializeJsonPretty(ob, Serial);
+        Serial.println("");
+    } else {
+        Serial.println("loadSetti: no ob");
+    }
+}
+```
+
+Change value of a key
+```Cpp
+#include "SettingsManager.h"
+
+SettingsManager sm; //Initialize
+
+void setup() {
+    Serial.begin(115200);
+    sm.readSettings("/config.json"); //Loading json from file config.json
+}
+void loop(){
+    int res = sm.setString("updateServer", "Other Test");
+    sm.setInt("ledPin", 15);
+    sm.writeSettings("/config.json");
+}
+```
