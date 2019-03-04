@@ -1,6 +1,6 @@
 /*
 
-  SettingsManager 1.0.0
+  SettingsManager 2.0.1
 
   Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
 
@@ -39,8 +39,6 @@ class SettingsManager {
     void readSettings(char * fileName);
     std::map <String, String> getSettings();
     void writeSettings(const char * fileName);
-    //    void writeSettings(const String &fileName, const String &content);
-
 
     signed int getInt(const char * key, const signed int defaultValue = 0);
     unsigned int getUInt(const char * key, const unsigned int defaultValue = 0);
