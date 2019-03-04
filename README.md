@@ -37,8 +37,13 @@ Intarface for reading, writing and managing settings in JSON format on SPIFFS.
  }
 }
 ```
+
 # Syntax
 For getting value o a key you can call ``` sm.getInt(<path/key>[, defaultValue]) ``` The default value will be returned if the ```path/key``` has not been found.
+
+For changing value of a key ``` sm.setInt(<path/key>, <value>) ``` will return SM_SUCCESS if the key has been found and changed; SM_KEY_NOT_FOUND if the key has not been found;
+
+See [SettingsManager.h](https://github.com/SergiuToporjinschi/settingsmanager/blob/master/src/SettingsManager.h) for more information.
 
 # Examples
 Reading/loading settings from file;
@@ -51,6 +56,7 @@ void setup() {
     Serial.begin(115200);
     sm.readSettings("/config.json"); //Loading json from file config.json
 }
+
 void loop(){
     Serial.println("int ledPin: "); 
     Serial.print(sm.getInt("ledPin", 99)); //get the int value from json root
@@ -76,6 +82,7 @@ void setup() {
     Serial.begin(115200);
     sm.readSettings("/config.json"); //Loading json from file config.json
 }
+
 void loop(){
     sm.loadJson("{\"testInLoadingJson\":\"this is a string value\",\"Level1\":{\"Level2Key\":12,\"Level2Test\":true,\"Level3\":{\"float\":23.5}}}");
     JsonObject ob = sm.getRoot();
@@ -98,6 +105,7 @@ void setup() {
     Serial.begin(115200);
     sm.readSettings("/config.json"); //Loading json from file config.json
 }
+
 void loop(){
     int res = sm.setString("updateServer", "Other Test");
     sm.setInt("ledPin", 15);
