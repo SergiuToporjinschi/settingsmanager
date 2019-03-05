@@ -34,6 +34,7 @@
 
 SettingsManager sm;
 void setup() {
+  DEBUG_BEGIN;
   delay(5000);
 }
 void getTests() {
@@ -114,8 +115,15 @@ void readWriteTest() {
   sm.writeSettings("/config.json");
 }
 
+void getUnexisitingValue() {
+  sm.loadJson("{\"testInLoadingJson\":\"this is a string value\",\"Level1\":{\"Level2Key\":12,\"Level2Test\":true,\"Level3\":{\"float\":23.5}}}");
+  Serial.print("Unexisting path: ");
+  Serial.println(sm.getInt("otherThing.otherstaff"));
+}
+
 void loadSettingsTest() {
   sm.loadJson("{\"testInLoadingJson\":\"this is a string value\",\"Level1\":{\"Level2Key\":12,\"Level2Test\":true,\"Level3\":{\"float\":23.5}}}");
+  
   JsonObject ob = sm.getRoot();
   if (!ob.isNull()) {
     serializeJsonPretty(ob, Serial);
@@ -138,4 +146,6 @@ void loop() {
   readWriteTest();
   delay(1000);
   loadSettingsTest();
+  delay(1000);
+  getUnexisitingValue();
 }
