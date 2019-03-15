@@ -50,7 +50,7 @@ class SettingsManager {
     unsigned long getULong(const char * key, const unsigned long defaultValue = 0L);
 
     char getCChar(const char * key, const char defaultValue = '\0');
-    signed char getChar(const char * key, const signed char defaultValue = '\0');
+    signed char getSChar(const char * key, const signed char defaultValue = '\0');
     unsigned char getUChar(const char * key, const unsigned char defaultValue = '\0');
 
     const char * getChar(const char * key, const char * defaultValue = '\0');

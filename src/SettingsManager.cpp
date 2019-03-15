@@ -246,7 +246,7 @@ char SettingsManager::getCChar(const char * key, const char defaultValue) {
   }
 }
 
-signed char SettingsManager::getChar(const char * key, const signed char defaultValue) {
+signed char SettingsManager::getSChar(const char * key, const signed char defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed char>();
