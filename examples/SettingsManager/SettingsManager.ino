@@ -1,6 +1,6 @@
 /*
 
-  SettingsManager 1.0.0
+  SettingsManager 2.0.3
 
   Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
 

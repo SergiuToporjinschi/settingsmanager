@@ -1,6 +1,6 @@
 /*
 
-  SettingsManager 2.0.1
+  SettingsManager 2.0.3
 
   Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
 
@@ -16,10 +16,10 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  
+
   dependency:
   ArduinoJson: https://arduinojson.org/
-  
+
 */
 
 #ifdef DEBUGER
@@ -40,7 +40,7 @@
 /**
     Reads the content of settings file given by path/name
 */
-void SettingsManager::readSettings(char * fileName) {
+void SettingsManager::readSettings(const char * fileName) {
   DBG("Reading settings from: "); DBGLN(fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "r");
@@ -84,8 +84,7 @@ void SettingsManager::writeSettings(const char * fileName) {
 */
 void SettingsManager::getFileContent(char* content, File &file) {
   char jsonChars[7] = "{},:[]";
-  char lastChr;
-  int len = 0;
+  char lastChr = '\0';
   while (file.available()) {
     char chr = (char)file.read();
     if (chr == 10 || chr == '\r' || chr == '\t' || (strchr(jsonChars, lastChr) != NULL && chr == ' ') || (int) chr == 255) {
@@ -157,8 +156,8 @@ JsonVariant SettingsManager::getJsonVariant(const char * key) {
 };
 
 /**
- * Returns the JsonObject stored to a specific key
- */
+   Returns the JsonObject stored to a specific key
+*/
 JsonObject SettingsManager::getJsonObject(const char * key) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
@@ -170,8 +169,8 @@ JsonObject SettingsManager::getJsonObject(const char * key) {
 }
 
 /**
- * Returns the JsonArray stored to a specific key
- */
+   Returns the JsonArray stored to a specific key
+*/
 JsonArray SettingsManager::getJsonArray(const char * key) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {

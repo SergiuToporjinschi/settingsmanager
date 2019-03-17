@@ -1,6 +1,6 @@
 /*
 
-  SettingsManager 2.0.1
+  SettingsManager 2.0.3
 
   Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
 
@@ -16,10 +16,10 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  
+
   dependency:
   ArduinoJson: https://arduinojson.org/
-  
+
 */
 
 #ifndef SettingsManager_h
@@ -36,7 +36,10 @@
 class SettingsManager {
   public:
     SettingsManager() {};
-    void readSettings(char * fileName);
+    void readSettings(const char * fileName);
+    void readSettings(const String fileName) {
+      readSettings(fileName.c_str());
+    };
     std::map <String, String> getSettings();
     void writeSettings(const char * fileName);
 
