@@ -25,7 +25,6 @@ Intarface for reading, writing and managing settings in JSON format on SPIFFS.
 		"topic": "topic/for/status"
 	},
 	"internalTopics" : {
-		"update": "update/topic",
 		"settings": "Settings/topic",
 		"cmd": "cmd/topic"
 	}
