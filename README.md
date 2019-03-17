@@ -3,7 +3,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/stargazers)
 [![GitHub watchers](https://img.shields.io/github/watchers/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/watchers)
 [![GitHub license](https://img.shields.io/github/license/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/blob/master/LICENSE)
-[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://github.com/SergiuToporjinschi/settingsmanager)
+[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/SergiuToporjinschi/settingsmanager)
 
 # Settings Manager
 
