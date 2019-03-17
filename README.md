@@ -1,3 +1,10 @@
+[![GitHub repo size in bytes](https://img.shields.io/github/repo-size/badges/shields.svg)](https://github.com/SergiuToporjinschi/settingsmanager)
+[![GitHub last commit](https://img.shields.io/github/last-commit/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/commits/master)
+[![GitHub stars](https://img.shields.io/github/stars/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/stargazers)
+[![GitHub watchers](https://img.shields.io/github/watchers/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/watchers)
+[![GitHub license](https://img.shields.io/github/license/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/blob/master/LICENSE)
+[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://github.com/SergiuToporjinschi/settingsmanager)
+
 # Settings Manager
 
 Intarface for reading, writing and managing settings in JSON format on SPIFFS.
