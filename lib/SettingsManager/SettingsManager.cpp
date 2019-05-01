@@ -1,6 +1,6 @@
 /*
 
-  SettingsManager 2.0.3
+  SettingsManager
 
   Copyright (C) 2017 by Sergiu Toporjinschi <sergiu dot toporjinschi at gmail dot com>
 
@@ -22,26 +22,15 @@
 
 */
 
-#ifdef DEBUGER
-#ifndef DBGLN
-#define DBGLN(x) Serial.println(x);
-#endif
-#ifndef DBG
-#define DBG(x) Serial.print(x);
-#endif
-#else
-#define DBGLN
-#define DBG
-#endif
-
-#include "Arduino.h"
 #include "SettingsManager.h"
+#include <Arduino.h>
 
 /**
     Reads the content of settings file given by path/name
 */
-void SettingsManager::readSettings(const char * fileName) {
-  DBG("Reading settings from: "); DBGLN(fileName);
+void SettingsManager::readSettings(const char *fileName) {
+  DBG("Reading settings from: ");
+  DBGLN(fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "r");
   if (!file) {
@@ -61,8 +50,9 @@ void SettingsManager::readSettings(const char * fileName) {
 /**
     Writes the content of settings to a file given by path/name
 */
-void SettingsManager::writeSettings(const char * fileName) {
-  DBG("Writing settings to: "); DBGLN(fileName);
+void SettingsManager::writeSettings(const char *fileName) {
+  DBG("Writing settings to: ");
+  DBGLN(fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "w");
   if (!file) {
@@ -82,12 +72,12 @@ void SettingsManager::writeSettings(const char * fileName) {
 /**
    Reads the file content
 */
-void SettingsManager::getFileContent(char* content, File &file) {
+void SettingsManager::getFileContent(char *content, File &file) {
   char jsonChars[7] = "{},:[]";
   char lastChr = '\0';
   while (file.available()) {
     char chr = (char)file.read();
-    if (chr == 10 || chr == '\r' || chr == '\t' || (strchr(jsonChars, lastChr) != NULL && chr == ' ') || (int) chr == 255) {
+    if (chr == 10 || chr == '\r' || chr == '\t' || (strchr(jsonChars, lastChr) != NULL && chr == ' ') || (int)chr == 255) {
       continue;
     }
     if ((int)lastChr == 32 && strchr(jsonChars, chr) != NULL) {
@@ -102,7 +92,7 @@ void SettingsManager::getFileContent(char* content, File &file) {
 /**
    Loads a json and is stored in json structure
 */
-void SettingsManager::loadJson(const char* payload) {
+void SettingsManager::loadJson(const char *payload) {
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
     DBGLN("Invalid JSON:");
@@ -124,24 +114,25 @@ void SettingsManager::openSPIFFS() {
 /**
    Returns the JsonVariant of a given key
 */
-JsonVariant SettingsManager::getJsonVariant(const char * key) {
+JsonVariant SettingsManager::getJsonVariant(const char *key) {
   if (root.containsKey(key)) {
     return root.getMember(key);
   }
   char _key[100] = {0};
   strcpy(_key, key);
 
-  char * k = strchr(_key, '.');
+  char *k = strchr(_key, '.');
   if (k == nullptr) {
-    DBG("Key not found:"); DBGLN(key);
+    DBG("Key not found:");
+    DBGLN(key);
     JsonVariant vr;
     return vr;
   }
-  char * crs = &_key[0];
+  char *crs = &_key[0];
   JsonVariant node = root;
   while (k != nullptr) {
     k[0] = '\0';
-    if ( strlen(crs) > 0) {
+    if (strlen(crs) > 0) {
       node = node.getMember(crs);
     }
     k++;
@@ -158,7 +149,7 @@ JsonVariant SettingsManager::getJsonVariant(const char * key) {
 /**
    Returns the JsonObject stored to a specific key
 */
-JsonObject SettingsManager::getJsonObject(const char * key) {
+JsonObject SettingsManager::getJsonObject(const char *key) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<JsonObject>();
@@ -171,7 +162,7 @@ JsonObject SettingsManager::getJsonObject(const char * key) {
 /**
    Returns the JsonArray stored to a specific key
 */
-JsonArray SettingsManager::getJsonArray(const char * key) {
+JsonArray SettingsManager::getJsonArray(const char *key) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<JsonArray>();
@@ -181,7 +172,7 @@ JsonArray SettingsManager::getJsonArray(const char * key) {
   }
 }
 
-signed int SettingsManager::getInt(const char * key, const signed int defaultValue) {
+signed int SettingsManager::getInt(const char *key, const signed int defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed int>();
@@ -190,7 +181,7 @@ signed int SettingsManager::getInt(const char * key, const signed int defaultVal
   }
 }
 
-unsigned int SettingsManager::getUInt(const char * key, const unsigned int defaultValue) {
+unsigned int SettingsManager::getUInt(const char *key, const unsigned int defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<unsigned int>();
@@ -199,7 +190,7 @@ unsigned int SettingsManager::getUInt(const char * key, const unsigned int defau
   }
 }
 
-signed short SettingsManager::getShort(const char * key, const signed short defaultValue) {
+signed short SettingsManager::getShort(const char *key, const signed short defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed short>();
@@ -208,7 +199,7 @@ signed short SettingsManager::getShort(const char * key, const signed short defa
   }
 }
 
-unsigned short SettingsManager::getUShort(const char * key, const unsigned short defaultValue) {
+unsigned short SettingsManager::getUShort(const char *key, const unsigned short defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<unsigned short>();
@@ -217,7 +208,7 @@ unsigned short SettingsManager::getUShort(const char * key, const unsigned short
   }
 }
 
-signed long SettingsManager::getLong(const char * key, const signed long defaultValue) {
+signed long SettingsManager::getLong(const char *key, const signed long defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed long>();
@@ -226,7 +217,7 @@ signed long SettingsManager::getLong(const char * key, const signed long default
   }
 }
 
-unsigned long SettingsManager::getULong(const char * key, const unsigned long defaultValue) {
+unsigned long SettingsManager::getULong(const char *key, const unsigned long defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<unsigned long>();
@@ -235,17 +226,17 @@ unsigned long SettingsManager::getULong(const char * key, const unsigned long de
   }
 }
 
-char SettingsManager::getCChar(const char * key, const char defaultValue) {
+char SettingsManager::getCChar(const char *key, const char defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
-    const char * x = item.as<const char*>();
+    const char *x = item.as<const char *>();
     return x[0];
   } else {
     return defaultValue;
   }
 }
 
-signed char SettingsManager::getSChar(const char * key, const signed char defaultValue) {
+signed char SettingsManager::getSChar(const char *key, const signed char defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<signed char>();
@@ -254,7 +245,7 @@ signed char SettingsManager::getSChar(const char * key, const signed char defaul
   }
 }
 
-unsigned char SettingsManager::getUChar(const char * key, const unsigned char defaultValue) {
+unsigned char SettingsManager::getUChar(const char *key, const unsigned char defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<unsigned char>();
@@ -263,16 +254,16 @@ unsigned char SettingsManager::getUChar(const char * key, const unsigned char de
   }
 }
 
-const char * SettingsManager::getChar(const char * key, const char * defaultValue) {
+const char *SettingsManager::getChar(const char *key, const char *defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
-    return item.as<char*>();
+    return item.as<char *>();
   } else {
     return defaultValue;
   }
 }
 
-String SettingsManager::getString(const char * key, const String defaultValue) {
+String SettingsManager::getString(const char *key, const String defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<String>();
@@ -281,7 +272,7 @@ String SettingsManager::getString(const char * key, const String defaultValue) {
   }
 }
 
-float SettingsManager::getFloat(const char * key, const float defaultValue) {
+float SettingsManager::getFloat(const char *key, const float defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<float>();
@@ -290,7 +281,7 @@ float SettingsManager::getFloat(const char * key, const float defaultValue) {
   }
 }
 
-double SettingsManager::getDouble(const char * key, const double defaultValue) {
+double SettingsManager::getDouble(const char *key, const double defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<double>();
@@ -299,7 +290,7 @@ double SettingsManager::getDouble(const char * key, const double defaultValue) {
   }
 }
 
-bool SettingsManager::getBool(const char * key, const bool defaultValue) {
+bool SettingsManager::getBool(const char *key, const bool defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<bool>();
@@ -308,7 +299,7 @@ bool SettingsManager::getBool(const char * key, const bool defaultValue) {
   }
 }
 
-int SettingsManager::setInt(const char * key, const signed int value) {
+int SettingsManager::setInt(const char *key, const signed int value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -317,7 +308,7 @@ int SettingsManager::setInt(const char * key, const signed int value) {
   }
 }
 
-int SettingsManager::setUInt(const char * key, const unsigned int value) {
+int SettingsManager::setUInt(const char *key, const unsigned int value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -326,7 +317,7 @@ int SettingsManager::setUInt(const char * key, const unsigned int value) {
   }
 }
 
-int SettingsManager::setShort(const char * key, const signed short value) {
+int SettingsManager::setShort(const char *key, const signed short value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -335,7 +326,7 @@ int SettingsManager::setShort(const char * key, const signed short value) {
   }
 }
 
-int SettingsManager::setUShort(const char * key, const unsigned short value) {
+int SettingsManager::setUShort(const char *key, const unsigned short value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -344,7 +335,7 @@ int SettingsManager::setUShort(const char * key, const unsigned short value) {
   }
 }
 
-int SettingsManager::setLong(const char * key, const signed long value) {
+int SettingsManager::setLong(const char *key, const signed long value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -353,7 +344,7 @@ int SettingsManager::setLong(const char * key, const signed long value) {
   }
 }
 
-int SettingsManager::setULong(const char * key, const unsigned long value) {
+int SettingsManager::setULong(const char *key, const unsigned long value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -362,7 +353,7 @@ int SettingsManager::setULong(const char * key, const unsigned long value) {
   }
 }
 
-int SettingsManager::setCChar(const char * key, const char value) {
+int SettingsManager::setCChar(const char *key, const char value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -371,7 +362,7 @@ int SettingsManager::setCChar(const char * key, const char value) {
   }
 }
 
-int SettingsManager::setChar(const char * key, const signed char value) {
+int SettingsManager::setChar(const char *key, const signed char value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -380,7 +371,7 @@ int SettingsManager::setChar(const char * key, const signed char value) {
   }
 }
 
-int SettingsManager::setUChar(const char * key, const unsigned char value) {
+int SettingsManager::setUChar(const char *key, const unsigned char value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -389,7 +380,7 @@ int SettingsManager::setUChar(const char * key, const unsigned char value) {
   }
 }
 
-int SettingsManager::setChar(const char * key, const char * value) {
+int SettingsManager::setChar(const char *key, const char *value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -398,7 +389,7 @@ int SettingsManager::setChar(const char * key, const char * value) {
   }
 }
 
-int SettingsManager::setString(const char * key, const String value) {
+int SettingsManager::setString(const char *key, const String value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -407,7 +398,7 @@ int SettingsManager::setString(const char * key, const String value) {
   }
 }
 
-int SettingsManager::setFloat(const char * key, const float value) {
+int SettingsManager::setFloat(const char *key, const float value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -416,7 +407,7 @@ int SettingsManager::setFloat(const char * key, const float value) {
   }
 }
 
-int SettingsManager::setDouble(const char * key, const double value) {
+int SettingsManager::setDouble(const char *key, const double value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
@@ -425,7 +416,7 @@ int SettingsManager::setDouble(const char * key, const double value) {
   }
 }
 
-int SettingsManager::setBool(const char * key, const bool value) {
+int SettingsManager::setBool(const char *key, const bool value) {
   JsonVariant item = getJsonVariant(key);
   if (item.isNull()) {
     return SM_KEY_NOT_FOUND;
