@@ -38,9 +38,10 @@ install:
     - platformio update
 
 script:
-    - platformio lib update
-    - platformio test
-    - platformio run
+    - pio lib update
+    - pio device list
+    - pio test
+    - pio run
 
 
 #
