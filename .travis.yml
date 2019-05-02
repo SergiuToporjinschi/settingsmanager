@@ -42,7 +42,6 @@ script:
     - platformio test
     - platformio run
 
-lib update
 
 #
 # Template #2: The project is intended to be used as a library with examples.
