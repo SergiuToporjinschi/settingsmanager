@@ -4,7 +4,6 @@
 #  define DBGLN(x)
 #  define DBG(x)
 #else
-#  define DEBUG_BEGIN Serila.begin(115200)
 #  define DEBUG_BEGIN Serial.begin(x)
 #  define DBGLN(x) Serial.println(x)
 #  define DBG(x) Serial.print(x)

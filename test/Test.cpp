@@ -199,7 +199,7 @@ void setup() {
 void loop() {
   UNITY_BEGIN();
   RUN_TEST(testLoadJson);
-  
+
   RUN_TEST(testString);
   RUN_TEST(testStringDefault);
   RUN_TEST(testStringNegative);
@@ -221,7 +221,7 @@ void loop() {
   RUN_TEST(testUShort);
   RUN_TEST(testUShortDefault);
   RUN_TEST(testUShortNegative);
-  
+
   RUN_TEST(testLong);
   RUN_TEST(testLongNeg);
   RUN_TEST(testLongDefault);
@@ -232,7 +232,7 @@ void loop() {
   RUN_TEST(testULongDefault);
   RUN_TEST(testULongNegative);
   RUN_TEST(testULongNegDefault);
-  
+
   RUN_TEST(testCChar);
   RUN_TEST(testCCharDefault);
 
