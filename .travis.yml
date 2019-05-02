@@ -39,7 +39,7 @@ install:
 
 script:
     - pio lib update
-    - pio run
+    - pio run -e nodemcuv2 -e nodemcuv2_Test -e esp01_1m
 
 
 #
