@@ -4,6 +4,7 @@
 [![GitHub watchers](https://img.shields.io/github/watchers/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/watchers)
 [![GitHub license](https://img.shields.io/github/license/SergiuToporjinschi/settingsmanager.svg)](https://github.com/SergiuToporjinschi/settingsmanager/blob/master/LICENSE)
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/SergiuToporjinschi/settingsmanager)
+[![Build Status](https://travis-ci.org/SergiuToporjinschi/settingsmanager.svg?branch=master)](https://travis-ci.org/SergiuToporjinschi/settingsmanager)
 
 # Settings Manager
 
