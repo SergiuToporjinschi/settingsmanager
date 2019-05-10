@@ -157,14 +157,14 @@ void loadSettingsTest() {
   Serial.println("double Level1.Level3.float: " + String(sm.getDouble("Level1.Level3.float", 75.299)));
   Serial.println("bool Level1.Level2Test: " + String(sm.getBool("Level1.Level2Test", true)));
 }
+
 void setup() {
   Serial.begin(115200);
   char version[55] = {0};
   sm.getVersion(version);
   Serial.print("Version: ");
   Serial.println(version);
-  //  delay(1000);
-  //  setTest();
+
   delay(5000);
   getTests();
   delay(1000);
@@ -173,6 +173,7 @@ void setup() {
   loadSettingsTest();
   delay(1000);
   getUnexisitingValue();
+
 }
 void loop() {
   delay(100);

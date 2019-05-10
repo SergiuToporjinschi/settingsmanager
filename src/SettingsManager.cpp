@@ -114,32 +114,57 @@ void SettingsManager::openSPIFFS() {
 /**
    Returns the JsonVariant of a given key
 */
-JsonVariant SettingsManager::getJsonVariant(const char *key) {
+JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) {
+  DBG("-> Searching for key: "); DBGLN(key);
+  //Maybe i'm lucky ...
   if (root.containsKey(key)) {
+    DBG("Key found in root:");
+    DBGLN(key);
     return root.getMember(key);
   }
   char _key[100] = {0};
   strcpy(_key, key);
-
   char *k = strchr(_key, '.');
+
+  //if it does not have any . then is not existing
   if (k == nullptr) {
-    DBG("Key not found:");
-    DBGLN(key);
-    JsonVariant vr;
-    return vr;
+    if (addIfMissing) {
+      DBG("Adding not existing key: "); DBGLN(key);
+      return root.getOrAddMember(key);
+    } else {
+      DBG("Key not found:");
+      DBGLN(key);
+      return JsonVariant();
+    }
   }
+
+  //for sure it has at least one .
   char *crs = &_key[0];
   JsonVariant node = root;
   while (k != nullptr) {
+    //replace the . with \0 to split the string
     k[0] = '\0';
     if (strlen(crs) > 0) {
-      node = node.getMember(crs);
+      if (!node.getMember(crs).isNull()) {
+        node = node.getMember(crs);
+      } else if (!addIfMissing) {
+        DBG("Key not found: "); DBGLN(crs);
+        return JsonVariant();
+      } else {
+        DBG("Adding not existing key: "); DBGLN(crs);
+        node = node.getOrAddMember(crs);
+      }
     }
     k++;
     crs = k;
     k = strchr(crs, '.');
     if (k == nullptr) {
-      node = node.getMember(crs);
+      if (node.getMember(crs).isNull() && addIfMissing) {
+        DBG("Adding not existing key: "); DBGLN(crs);
+        node = node.getOrAddMember(crs);
+      } else {
+        node = node.getMember(crs);
+      }
       break;
     }
   }
@@ -149,26 +174,28 @@ JsonVariant SettingsManager::getJsonVariant(const char *key) {
 /**
    Returns the JsonObject stored to a specific key
 */
-JsonObject SettingsManager::getJsonObject(const char *key) {
-  JsonVariant item = getJsonVariant(key);
+JsonObject SettingsManager::getJsonObject(const char *key, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
   if (!item.isNull()) {
     return item.as<JsonObject>();
+  } else if (addIfMissing) {
+    return item.getOrAddMember(key);    
   } else {
-    JsonObject obj;
-    return obj;
+    return JsonObject();
   }
 }
 
 /**
    Returns the JsonArray stored to a specific key
 */
-JsonArray SettingsManager::getJsonArray(const char *key) {
+JsonArray SettingsManager::getJsonArray(const char *key, bool addIfMissing) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
     return item.as<JsonArray>();
+  } else if (addIfMissing) {
+    return item.getOrAddMember(key);
   } else {
-    JsonArray arr;
-    return arr;
+    return JsonArray();
   }
 }
 
@@ -299,128 +326,92 @@ bool SettingsManager::getBool(const char *key, const bool defaultValue) {
   }
 }
 
-int SettingsManager::setInt(const char *key, const signed int value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setInt(const char *key, const signed int value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setUInt(const char *key, const unsigned int value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setShort(const char *key, const signed short value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setShort(const char *key, const signed short value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setLong(const char *key, const signed long value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setUShort(const char *key, const unsigned short value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setCChar(const char *key, const char value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setLong(const char *key, const signed long value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setChar(const char *key, const char *value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setULong(const char *key, const unsigned long value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setString(const char *key, const String value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setCChar(const char *key, const char value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setFloat(const char *key, const float value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setChar(const char *key, const signed char value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setDouble(const char *key, const double value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
+  } else {
+    DBGLN("null node");
+    return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setUChar(const char *key, const unsigned char value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
+int SettingsManager::setBool(const char *key, const bool value, bool addIfMissing) {
+  JsonVariant item = getJsonVariant(key, addIfMissing);
+  if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
-  }
-}
-
-int SettingsManager::setChar(const char *key, const char *value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
   } else {
-    return item.set(value) ? SM_SUCCESS : SM_ERROR;
-  }
-}
-
-int SettingsManager::setString(const char *key, const String value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
+    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
-  } else {
-    return item.set(value) ? SM_SUCCESS : SM_ERROR;
-  }
-}
-
-int SettingsManager::setFloat(const char *key, const float value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
-    return item.set(value) ? SM_SUCCESS : SM_ERROR;
-  }
-}
-
-int SettingsManager::setDouble(const char *key, const double value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
-    return item.set(value) ? SM_SUCCESS : SM_ERROR;
-  }
-}
-
-int SettingsManager::setBool(const char *key, const bool value) {
-  JsonVariant item = getJsonVariant(key);
-  if (item.isNull()) {
-    return SM_KEY_NOT_FOUND;
-  } else {
-    return item.set(value) ? SM_SUCCESS : SM_ERROR;
   }
 }

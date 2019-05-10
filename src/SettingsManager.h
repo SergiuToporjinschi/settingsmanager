@@ -63,24 +63,19 @@ class SettingsManager {
   double getDouble(const char *key, const double defaultValue = (double)(0.0));
   bool getBool(const char *key, const bool defaultValue = false);
 
-  int setInt(const char *key, const signed int value);
-  int setUInt(const char *key, const unsigned int value);
-  int setShort(const char *key, const signed short value);
-  int setUShort(const char *key, const unsigned short value);
-  int setLong(const char *key, const signed long value);
-  int setULong(const char *key, const unsigned long value);
-  int setCChar(const char *key, const char value);
-  int setChar(const char *key, const signed char value);
-  int setUChar(const char *key, const unsigned char value);
-  int setChar(const char *key, const char *value);
-  int setString(const char *key, const String value);
-  int setFloat(const char *key, const float value);
-  int setDouble(const char *key, const double value);
-  int setBool(const char *key, const bool value);
+  int setInt(const char *key, const signed int value, bool addIfMissing = 1);
+  int setShort(const char *key, const signed short value, bool addIfMissing = 1);
+  int setLong(const char *key, const signed long value, bool addIfMissing = 1);
+  int setCChar(const char *key, const char value, bool addIfMissing = 1);
+  int setChar(const char *key, const char *value, bool addIfMissing = 1);
+  int setString(const char *key, const String value, bool addIfMissing = 1);
+  int setFloat(const char *key, const float value, bool addIfMissing = 1);
+  int setDouble(const char *key, const double value, bool addIfMissing = 1);
+  int setBool(const char *key, const bool value, bool addIfMissing = 1);
 
-  JsonVariant getJsonVariant(const char *key);
-  JsonObject getJsonObject(const char *key);
-  JsonArray getJsonArray(const char *key);
+  JsonVariant getJsonVariant(const char *key, bool addIfMissing = 0);
+  JsonObject getJsonObject(const char *key, bool addIfMissing = 0);
+  JsonArray getJsonArray(const char *key, bool addIfMissing = 0);
 
   JsonObject getRoot() {
     return root;

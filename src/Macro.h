@@ -1,5 +1,5 @@
 //=================[ DEBUGER ]=================
-#ifndef DEBUGER
+#ifndef DEBUGGER
 #  define DEBUG_BEGIN
 #  define DBGLN(x)
 #  define DBG(x)
