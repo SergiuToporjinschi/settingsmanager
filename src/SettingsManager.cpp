@@ -28,7 +28,7 @@
 /**
     Reads the content of settings file given by path/name
 */
-void SettingsManager::readSettings(const char *fileName) {
+int SettingsManager::readSettings(const char *fileName) {
   DBG("Reading settings from: ");
   DBGLN(fileName);
   openSPIFFS();
@@ -36,7 +36,7 @@ void SettingsManager::readSettings(const char *fileName) {
   if (!file) {
     DBGLN("Could not open file");
     SPIFFS.end();
-    return;
+    return SM_ERROR;
   } else {
     char js[JSON_LEN] = {0};
     getFileContent(js, file);
@@ -45,6 +45,7 @@ void SettingsManager::readSettings(const char *fileName) {
   DBGLN("Closing file");
   file.close();
   SPIFFS.end();
+  return SM_SUCCESS;
 }
 
 /**
@@ -92,13 +93,14 @@ void SettingsManager::getFileContent(char *content, File &file) {
 /**
    Loads a json and is stored in json structure
 */
-void SettingsManager::loadJson(const char *payload) {
+int SettingsManager::loadJson(const char *payload) {
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
     DBGLN("Invalid JSON:");
-    return;
+    return SM_ERROR;
   }
   root = doc.as<JsonObject>();
+  return SM_SUCCESS;
 }
 
 /**
@@ -179,7 +181,7 @@ JsonObject SettingsManager::getJsonObject(const char *key, bool addIfMissing) {
   if (!item.isNull()) {
     return item.as<JsonObject>();
   } else if (addIfMissing) {
-    return item.getOrAddMember(key);    
+    return item.getOrAddMember(key);
   } else {
     return JsonObject();
   }

@@ -34,9 +34,9 @@
 class SettingsManager {
  public:
   SettingsManager(){};
-  void readSettings(const char *fileName);
-  void readSettings(const String fileName) {
-    readSettings(fileName.c_str());
+  int readSettings(const char *fileName);
+  int readSettings(const String fileName) {
+    return readSettings(fileName.c_str());
   };
   void writeSettings(const char *fileName);
 
@@ -80,7 +80,7 @@ class SettingsManager {
   JsonObject getRoot() {
     return root;
   };
-  void loadJson(const char *payload);
+  int loadJson(const char *payload);
 
  private:
   DynamicJsonDocument doc = DynamicJsonDocument(1300);
