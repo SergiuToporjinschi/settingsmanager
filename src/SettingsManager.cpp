@@ -46,30 +46,35 @@ int SettingsManager::readSettings(const char *fileName) {
   file.close();
   SPIFFS.end();
   return SM_SUCCESS;
-}
+  }
 
 /**
     Writes the content of settings to a file given by path/name
 */
 int SettingsManager::writeSettings(const char *fileName) {
+  return writeSettings(fileName, doc.as<JsonVariant>());
+}
+
+/**
+    Writes the content of settings to a file given by path/name
+*/
+int SettingsManager::writeSettings(const char *fileName, JsonVariant conf) {
   DBG("Writing settings to: ");
   DBGLN(fileName);
   openSPIFFS();
+
   File file = SPIFFS.open(fileName, "w");
   if (!file) {
-    DBGLN("Could not write  file");
+    DBGLN("Could not write in file");
     SPIFFS.end();
     return SM_ERROR;
   } else {
-    char buff[JSON_LEN] = {0};
-    size_t len = measureJsonPretty(root) + 1;
-    serializeJsonPretty(root, buff, len);
-    file.print(buff);
-    file.flush();
+    serializeJson(conf, file);
+    DBGLN("File written");
   }
-  DBGLN("Closing file");
   file.close();
   SPIFFS.end();
+  DBGLN("File and SPIFFS closed");
   return SM_SUCCESS;
 }
 
@@ -97,15 +102,14 @@ void SettingsManager::getFileContent(char *content, File &file) {
    Loads a json and is stored in json structure
 */
 int SettingsManager::loadJson(const char *payload) {
+  doc.clear();
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
-    DBG("Error on deserialisation:");
+    DBG("Could not deserialize payload:");
     DBGLN(err.c_str());
-    DBG("Capacity: ");
-    DBGLN(doc.capacity());
     return SM_ERROR;
   }
-  root = doc.as<JsonObject>();
+  root = doc.as<JsonVariant>();
   return SM_SUCCESS;
 }
 

@@ -39,6 +39,7 @@ class SettingsManager {
     return readSettings(fileName.c_str());
   };
   int writeSettings(const char *fileName);
+  int writeSettings(const char *fileName, JsonVariant conf);
 
   void getVersion(char *fullVersion) {
     sprintf(fullVersion, "%s(%s)", VER, REV);
