@@ -38,7 +38,7 @@ class SettingsManager {
   int readSettings(const String fileName) {
     return readSettings(fileName.c_str());
   };
-  void writeSettings(const char *fileName);
+  int writeSettings(const char *fileName);
 
   void getVersion(char *fullVersion) {
     sprintf(fullVersion, "%s(%s)", VER, REV);

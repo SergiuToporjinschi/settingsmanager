@@ -51,13 +51,15 @@ int SettingsManager::readSettings(const char *fileName) {
 /**
     Writes the content of settings to a file given by path/name
 */
-void SettingsManager::writeSettings(const char *fileName) {
+int SettingsManager::writeSettings(const char *fileName) {
   DBG("Writing settings to: ");
   DBGLN(fileName);
   openSPIFFS();
   File file = SPIFFS.open(fileName, "w");
   if (!file) {
     DBGLN("Could not write  file");
+    SPIFFS.end();
+    return SM_ERROR;
   } else {
     char buff[JSON_LEN] = {0};
     size_t len = measureJsonPretty(root) + 1;
@@ -68,6 +70,7 @@ void SettingsManager::writeSettings(const char *fileName) {
   DBGLN("Closing file");
   file.close();
   SPIFFS.end();
+  return SM_SUCCESS;
 }
 
 /**
@@ -96,7 +99,10 @@ void SettingsManager::getFileContent(char *content, File &file) {
 int SettingsManager::loadJson(const char *payload) {
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
-    DBGLN("Invalid JSON:");
+    DBG("Error on deserialisation:");
+    DBGLN(err.c_str());
+    DBG("Capacity: ");
+    DBGLN(doc.capacity());
     return SM_ERROR;
   }
   root = doc.as<JsonObject>();
