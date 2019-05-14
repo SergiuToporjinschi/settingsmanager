@@ -31,23 +31,25 @@
 int SettingsManager::readSettings(const char *fileName) {
   DBG("Reading settings from: ");
   DBGLN(fileName);
+  unsigned int loaded = SM_SUCCESS;
   openSPIFFS();
   File file = SPIFFS.open(fileName, "r");
   if (!file) {
     DBGLN("Could not open file");
     SPIFFS.end();
-    return SM_ERROR;
+    loaded = SM_ERROR;
   } else {
     char js[JSON_LEN] = {0};
     getFileContent(js, file);
-    loadJson(js);
+    loaded = loadJson(js);
+    file.close();
+    SPIFFS.end();
   }
   DBGLN("Closing file");
-  file.close();
-  SPIFFS.end();
-  return SM_SUCCESS;
-  }
+  return loaded;
+}
 
+/**
 /**
     Writes the content of settings to a file given by path/name
 */
