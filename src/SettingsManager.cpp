@@ -72,6 +72,7 @@ int SettingsManager::writeSettings(const char *fileName, JsonVariant conf) {
     return SM_ERROR;
   } else {
     serializeJson(conf, file);
+    file.flush();
     DBGLN("File written");
   }
   file.close();
