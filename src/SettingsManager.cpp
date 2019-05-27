@@ -132,10 +132,11 @@ void SettingsManager::openSPIFFS() {
 JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) {
   DBG("-> Searching for key: "); DBGLN(key);
   //Maybe i'm lucky ...
-  if (root.containsKey(key)) {
+  JsonVariant val = root.getMember(key);
+  if (!val.isNull()) {
     DBG("Key found in root:");
     DBGLN(key);
-    return root.getMember(key);
+    return val;
   }
   char _key[100] = {0};
   strcpy(_key, key);
