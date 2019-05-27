@@ -50,7 +50,6 @@ int SettingsManager::readSettings(const char *fileName) {
 }
 
 /**
-/**
     Writes the content of settings to a file given by path/name
 */
 int SettingsManager::writeSettings(const char *fileName) {
