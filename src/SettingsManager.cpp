@@ -71,7 +71,7 @@ int SettingsManager::writeSettings(const char *fileName, JsonVariant conf) {
     return SM_ERROR;
   } else {
     serializeJson(conf, file);
-    file.flush();
+    delay(1000);
     DBGLN("File written");
   }
   file.close();
@@ -122,6 +122,8 @@ void SettingsManager::openSPIFFS() {
   if (!SPIFFS.begin()) {
     delay(100);
     DBGLN("Could not mount SPIFFS file system");
+  } else {
+    DBGLN("SPIFFS file system, open");
   }
 }
 
