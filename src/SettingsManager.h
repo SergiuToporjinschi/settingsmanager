@@ -26,6 +26,7 @@
 #define SettingsManager_h
 
 #include "FS.h"
+#include "dbg.h"
 #include "Macro.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>

@@ -1,14 +1,3 @@
-//=================[ DEBUGER ]=================
-#ifndef DEBUGGER
-#  define DEBUG_BEGIN
-#  define DBGLN(x)
-#  define DBG(x)
-#else
-#  define DEBUG_BEGIN Serial.begin(x)
-#  define DBGLN(x) Serial.println(x)
-#  define DBG(x) Serial.print(x)
-#endif
-
 //=================[ REVISION ]================
 #ifndef REV
 #  define REV (char *)"NONE"
