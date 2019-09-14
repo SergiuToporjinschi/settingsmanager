@@ -112,7 +112,7 @@ void testAddNonExistingNodesInStructure() {
 
 void setup() {
   Serial.begin(115200);
-
+  DBG_BEGIN;
   delay(5000);
 
   Serial.println("********** [ Read Change Save ]**********");

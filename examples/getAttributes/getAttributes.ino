@@ -160,6 +160,7 @@ void loadSettingsTest() {
 
 void setup() {
   Serial.begin(115200);
+  DBG_BEGIN;
   char version[55] = {0};
   sm.getVersion(version);
   Serial.print("Version: ");
@@ -173,8 +174,8 @@ void setup() {
   loadSettingsTest();
   delay(1000);
   getUnexisitingValue();
-
 }
+
 void loop() {
   delay(100);
 }
