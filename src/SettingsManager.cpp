@@ -29,6 +29,7 @@
     Reads the content of settings file given by path/name
 */
 int SettingsManager::readSettings(const char *fileName) {
+  DBG_BEGIN;
   DBG("Reading settings from: ");
   DBGLN(fileName);
   unsigned int loaded = SM_SUCCESS;
