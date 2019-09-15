@@ -1,13 +1,3 @@
-//=================[ DEBUGGER ]================
-#  ifdef DEBUG_SETTINGS
-#    define DBG(x) debug->print(x)
-#    define DBGLN(x) debug->println(x)
-#  else
-#    define DBG(X)
-#    define DBGLN(X)
-#  endif // DEBUG
-
-
 //=================[ REVISION ]================
 #ifndef REV
 #  define REV (char *)"NONE"

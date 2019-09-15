@@ -25,6 +25,16 @@
 #include "SettingsManager.h"
 #include <Arduino.h>
 
+//=================[ DEBUG_SETTINGS ]================
+#  ifdef DEBUG_SETTINGS
+#    define DBG(x) debug->print(x)
+#    define DBGLN(x) debug->println(x)
+#  else
+#    define DBG(X)
+#    define DBGLN(X)
+#  endif // DEBUG
+//=================[ DEBUG_SETTINGS ]================
+
 /**
     Reads the content of settings file given by path/name
 */
