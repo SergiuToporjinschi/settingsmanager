@@ -29,7 +29,6 @@
     Reads the content of settings file given by path/name
 */
 int SettingsManager::readSettings(const char *fileName) {
-  DBG_BEGIN;
   DBG("Reading settings from: ");
   DBGLN(fileName);
   unsigned int loaded = SM_SUCCESS;
@@ -433,3 +432,8 @@ int SettingsManager::setBool(const char *key, const bool value, bool addIfMissin
     return SM_KEY_NOT_FOUND;
   }
 }
+#ifdef DEBUG_SETTINGS
+void SettingsManager::setDebugger(Print *print) {
+  debug = print;
+}
+#endif

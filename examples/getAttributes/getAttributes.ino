@@ -159,8 +159,11 @@ void loadSettingsTest() {
 }
 
 void setup() {
+  delay(5000);
   Serial.begin(115200);
-  DBG_BEGIN;
+#ifdef DEBUG_SETTINGS
+  sm.setDebugger(&Serial);
+#endif
   char version[55] = {0};
   sm.getVersion(version);
   Serial.print("Version: ");

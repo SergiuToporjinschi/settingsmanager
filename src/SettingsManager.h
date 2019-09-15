@@ -26,7 +26,6 @@
 #define SettingsManager_h
 
 #include "FS.h"
-#include "dbg.h"
 #include "Macro.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -84,7 +83,14 @@ class SettingsManager {
   };
   int loadJson(const char *payload);
 
+#ifdef DEBUG_SETTINGS
+  void setDebugger(Print *print);
+#endif
+
  private:
+#ifdef DEBUG_SETTINGS
+  Print *debug = &Serial;
+#endif
   DynamicJsonDocument doc = DynamicJsonDocument(1300);
   JsonObject root;
   void getFileContent(char *content, File &file);
