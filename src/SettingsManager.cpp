@@ -25,22 +25,27 @@
 #include "SettingsManager.h"
 #include <Arduino.h>
 
-//=================[ DEBUG_SETTINGS ]================
-#  ifdef DEBUG_SETTINGS
-#    define DBG(x) debug->print(x)
-#    define DBGLN(x) debug->println(x)
-#  else
-#    define DBG(X)
-#    define DBGLN(X)
-#  endif // DEBUG
-//=================[ DEBUG_SETTINGS ]================
+//=================[ DEBUG ]================
+#ifdef DEBUG_SETTINGS
+#  define DBG(x)    \
+    this->debug->print(x); \
+    this->debug->flush();
+#  define DBGLN(x, ...)                             \
+    this->debug->printf("[%s](%d): ", __FILE__, __LINE__); \
+    this->debug->printf(x, ##__VA_ARGS__);                 \
+    this->debug->println("");                              \
+    this->debug->flush();
+#else
+#  define DBG(X)
+#  define DBGLN(X, ...)
+#endif // DEBUG_SETTINGS
+//=================[ DEBUG ]================
 
 /**
     Reads the content of settings file given by path/name
 */
 int SettingsManager::readSettings(const char *fileName) {
-  DBG("Reading settings from: ");
-  DBGLN(fileName);
+  DBGLN("Reading settings from: %s", fileName);
   unsigned int loaded = SM_SUCCESS;
   openSPIFFS();
   File file = SPIFFS.open(fileName, "r");
@@ -70,8 +75,7 @@ int SettingsManager::writeSettings(const char *fileName) {
     Writes the content of settings to a file given by path/name
 */
 int SettingsManager::writeSettings(const char *fileName, JsonVariant conf) {
-  DBG("Writing settings to: ");
-  DBGLN(fileName);
+  DBGLN("Writing settings to: %s", fileName);
   openSPIFFS();
 
   File file = SPIFFS.open(fileName, "w");
@@ -117,8 +121,7 @@ int SettingsManager::loadJson(const char *payload) {
   doc.clear();
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
-    DBG("Could not deserialize payload:");
-    DBGLN(err.c_str());
+    DBGLN("Could not deserialize payload: %s", err.c_str());
     return SM_ERROR;
   }
   root = doc.as<JsonVariant>();
@@ -141,12 +144,11 @@ void SettingsManager::openSPIFFS() {
    Returns the JsonVariant of a given key
 */
 JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) {
-  DBG("-> Searching for key: "); DBGLN(key);
+  DBGLN("-> Searching for key: %s", key);
   //Maybe i'm lucky ...
   JsonVariant val = root.getMember(key);
   if (!val.isNull()) {
-    DBG("Key found in root:");
-    DBGLN(key);
+    DBGLN("Key found in root: %s", key);
     return val;
   }
   char _key[100] = {0};
@@ -156,11 +158,10 @@ JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) 
   //if it does not have any . then is not existing
   if (k == nullptr) {
     if (addIfMissing) {
-      DBG("Adding not existing key: "); DBGLN(key);
+      DBGLN("Adding not existing key: %s", key);
       return root.getOrAddMember(key);
     } else {
-      DBG("Key not found:");
-      DBGLN(key);
+      DBGLN("Key not found %s", key);
       return JsonVariant();
     }
   }
@@ -175,10 +176,10 @@ JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) 
       if (!node.getMember(crs).isNull()) {
         node = node.getMember(crs);
       } else if (!addIfMissing) {
-        DBG("Key not found: "); DBGLN(crs);
+        DBGLN("Key not found: %s", crs);
         return JsonVariant();
       } else {
-        DBG("Adding not existing key: "); DBGLN(crs);
+        DBGLN("Adding not existing key: %s", crs);
         node = node.getOrAddMember(crs);
       }
     }
@@ -187,7 +188,7 @@ JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) 
     k = strchr(crs, '.');
     if (k == nullptr) {
       if (node.getMember(crs).isNull() && addIfMissing) {
-        DBG("Adding not existing key: "); DBGLN(crs);
+        DBGLN("Adding not existing key: %s", crs);
         node = node.getOrAddMember(crs);
       } else {
         node = node.getMember(crs);
