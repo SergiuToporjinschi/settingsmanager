@@ -21,6 +21,9 @@
   ArduinoJson: https://arduinojson.org/
   
 */
+#ifdef DEBUGGER
+Print *dbg = &Serial;
+#endif
 
 #include "Macro.h"
 #include "SettingsManager.h"
@@ -161,9 +164,7 @@ void loadSettingsTest() {
 void setup() {
   delay(5000);
   Serial.begin(115200);
-#ifdef DEBUG_SETTINGS
-  sm.setDebugger(&Serial);
-#endif
+
   char version[55] = {0};
   sm.getVersion(version);
   Serial.print("Version: ");

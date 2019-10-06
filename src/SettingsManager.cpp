@@ -1,4 +1,4 @@
-/*
+/* 
 
   SettingsManager
 
@@ -6,8 +6,7 @@
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  the Free Software Foundation version 3.
 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,31 +14,14 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  along with this program. If not, see <https://spdx.org/licenses/GPL-3.0-only.html>.
 
-  dependency:
-  ArduinoJson: https://arduinojson.org/
+  All rights reserved
 
 */
 
 #include "SettingsManager.h"
-#include <Arduino.h>
-
-//=================[ DEBUG ]================
-#ifdef DEBUG_SETTINGS
-#  define DBG(x)    \
-    this->debug->print(x); \
-    this->debug->flush();
-#  define DBGLN(x, ...)                             \
-    this->debug->printf("[%s](%d): ", __FILE__, __LINE__); \
-    this->debug->printf(x, ##__VA_ARGS__);                 \
-    this->debug->println("");                              \
-    this->debug->flush();
-#else
-#  define DBG(X)
-#  define DBGLN(X, ...)
-#endif // DEBUG_SETTINGS
-//=================[ DEBUG ]================
+#include "debug_macro.h"
 
 /**
     Reads the content of settings file given by path/name
@@ -443,8 +425,3 @@ int SettingsManager::setBool(const char *key, const bool value, bool addIfMissin
     return SM_KEY_NOT_FOUND;
   }
 }
-#ifdef DEBUG_SETTINGS
-void SettingsManager::setDebugger(Print *print) {
-  debug = print;
-}
-#endif

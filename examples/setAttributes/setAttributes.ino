@@ -22,6 +22,11 @@
   
 */
 
+#include "debug_macro.h"
+#ifdef DEBUGGER 
+Print *dbg = &Serial;
+#endif
+
 #include "Macro.h"
 #include "SettingsManager.h"
 #include <Arduino.h>
@@ -112,10 +117,7 @@ void testAddNonExistingNodesInStructure() {
 
 void setup() {
   delay(5000);
-  Serial.begin(115200);
-#ifdef DEBUG_SETTINGS
-  sm.setDebugger(&Serial);
-#endif
+  Serial.begin(74800);
 
   Serial.println("********** [ Read Change Save ]**********");
   readChangeSave();
