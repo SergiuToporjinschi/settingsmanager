@@ -1,5 +1,5 @@
 {
-    "name": "espManager",
+    "name": "Settings Manager",
     "version": "2.1.2",
     "license": "GPL-3.0-only",
     "description": "A wrapper for connection an ESP8266-01 to wifi, mqtt and create a small comunication",
