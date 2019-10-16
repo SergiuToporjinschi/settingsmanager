@@ -23,6 +23,8 @@
 #include "SettingsManager.h"
 #include "debug_macro.h"
 
+#include "SPIFFS.h"
+
 /**
     Reads the content of settings file given by path/name
 */
