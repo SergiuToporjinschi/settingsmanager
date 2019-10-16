@@ -1,6 +1,9 @@
+#undef UNITY_EXCLUDE_FLOAT
+
 #include "../src/SettingsManager.h"
 #include <Arduino.h>
 #include <unity.h>
+
 
 SettingsManager sm;
 
@@ -9,42 +12,94 @@ void test_ReadSettings(void) {
   UNITY_TEST_ASSERT_EQUAL_INT(SM_ERROR, sm.readSettings("/NoFile.json"), __LINE__, "File shold not exists");
 }
 
-void test_valueType() {
-  sm.readSettings("/config.json");
+void test_NumericValueType() {
+  UNITY_NEW_TEST("getInt")  ;
   UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getInt("ledPin"), __LINE__, "Error on getInt");
   UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getInt("ledPin", 99), __LINE__, "Error on getInt with default value");
   UNITY_TEST_ASSERT_EQUAL_INT(99, sm.getInt("noProp", 99), __LINE__, "Error on default value getInt");
+  
+  UNITY_NEW_TEST("getUInt");
+  UNITY_TEST_ASSERT_EQUAL_UINT(13, sm.getUInt("ledPin"), __LINE__, "Error on getUInt");
+  UNITY_TEST_ASSERT_EQUAL_UINT(13, sm.getUInt("ledPin", 99), __LINE__, "Error on getUInt with default value");
+  UNITY_TEST_ASSERT_EQUAL_UINT(99, sm.getUInt("noProp", 99), __LINE__, "Error on default value getUInt");
 
-  // Serial.println("int ledPin: " + String(sm.getInt("ledPin")));
-  // Serial.println("int ledPin: " + String(sm.getInt("ledPin", 99)));
-  // Serial.println("int ledPins default: " + String(sm.getInt("ledPins", 99)));
+  UNITY_NEW_TEST("getShort");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getShort("ledPin"), __LINE__, "Error on getShort");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getShort("ledPin", 99), __LINE__, "Error on getShort with default value");
+  UNITY_TEST_ASSERT_EQUAL_INT(99, sm.getShort("noProp", 99), __LINE__, "Error on default value getShort");
 
-  // Serial.println("uint ledPin: " + String(sm.getUInt("ledPin")));
-  // Serial.println("uint ledPin: " + String(sm.getUInt("ledPin", 99)));
-  // Serial.println("uint ledPins default: " + String(sm.getUInt("ledPins", 99)));
+  UNITY_NEW_TEST("getUShort");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getUShort("ledPin"), __LINE__, "Error on getUShort");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getUShort("ledPin", 99), __LINE__, "Error on getUShort with default value");
+  UNITY_TEST_ASSERT_EQUAL_INT(99, sm.getUShort("noProp", 99), __LINE__, "Error on default value getUShort");
 
-  // Serial.println("short ledPin: " + String(sm.getShort("ledPin")));
-  // Serial.println("short ledPin: " + String(sm.getShort("ledPin", 99)));
-  // Serial.println("short ledPins default: " + String(sm.getShort("ledPins", 99)));
+  UNITY_NEW_TEST("getLong");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getLong("ledPin"), __LINE__, "Error on getLong");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getLong("ledPin", 99), __LINE__, "Error on getLong with default value");
+  UNITY_TEST_ASSERT_EQUAL_INT(99, sm.getLong("noProp", 99), __LINE__, "Error on default value getLong");
 
-  // Serial.println("ushort ledPin: " + String(sm.getUShort("ledPin")));
-  // Serial.println("ushort ledPin: " + String(sm.getUShort("ledPin", 99)));
-  // Serial.println("ushort ledPins default: " + String(sm.getUShort("ledPins", 99)));
+  UNITY_NEW_TEST("getULong");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getULong("ledPin"), __LINE__, "Error on getULong");
+  UNITY_TEST_ASSERT_EQUAL_INT(13, sm.getULong("ledPin", 99), __LINE__, "Error on getULong with default value");
+  UNITY_TEST_ASSERT_EQUAL_INT(99, sm.getULong("noProp", 99), __LINE__, "Error on default value getULong");
 
-  // Serial.println("long ledPin: " + String(sm.getLong("ledPin")));
-  // Serial.println("long ledPin: " + String(sm.getLong("ledPin", 99L)));
-  // Serial.println("long ledPins default : " + String(sm.getLong("ledPins", 99L)));
+#ifndef UNITY_EXCLUDE_DOUBLE
+  UNITY_NEW_TEST("getDouble");
+  UNITY_TEST_ASSERT_EQUAL_DOUBLE((double)(32.3223), sm.getDouble("doubleTest"), __LINE__, "Error on getDouble");
+  UNITY_TEST_ASSERT_EQUAL_DOUBLE((double)(32.3223), sm.getDouble("doubleTest", (double)(75.299)), __LINE__, "Error on getDouble with default value");
+  UNITY_TEST_ASSERT_EQUAL_DOUBLE((double)(75.299), sm.getDouble("noProp", (double)(75.299)), __LINE__, "Error on default value getDouble");
+#endif
 
-  // Serial.println("ulong ledPin: " + String(sm.getULong("ledPin")));
-  // Serial.println("ulong ledPin: " + String(sm.getULong("ledPin", 99L)));
-  // Serial.println("ulong ledPins default : " + String(sm.getULong("ledPins", 99L)));
+#ifndef UNITY_EXCLUDE_DOUBLE
+  UNITY_NEW_TEST("getFloat");
+  UNITY_TEST_ASSERT_EQUAL_FLOAT((float)(12.33), sm.getFloat("floatTest"), __LINE__, "Error on getFloat");
+  UNITY_TEST_ASSERT_EQUAL_FLOAT((float)(12.33), sm.getFloat("floatTest", (float)(75.299)), __LINE__, "Error on getFloat with default value");
+  UNITY_TEST_ASSERT_EQUAL_FLOAT((float)(75.299), sm.getFloat("noProp", (float)(75.299)), __LINE__, "Error on default value getFloat");
+#endif
 }
+
+void test_BoolValueType() {
+  UNITY_NEW_TEST("getBoolean");  
+  UNITY_TEST_ASSERT(sm.getBool("boolTest"), __LINE__, "Error on getBool");
+  UNITY_TEST_ASSERT(sm.getBool("boolTest", "false"), __LINE__, "Error on getBool with default value");
+  UNITY_TEST_ASSERT(sm.getBool("boolTest", "true"), __LINE__, "Error on default value getBool");
+}
+
+void test_CharValueType() {
+  UNITY_NEW_TEST("getCChar");    
+  UNITY_TEST_ASSERT_EQUAL_INT('t', sm.getCChar("charTest"), __LINE__, "Error on getCChar");
+  UNITY_TEST_ASSERT_EQUAL_INT('t', sm.getCChar("charTest", 'H'), __LINE__, "Error on getCChar with default value");
+  UNITY_TEST_ASSERT_EQUAL_INT('H', sm.getCChar("noProp", 'H'), __LINE__, "Error on default value getCChar");
+
+  UNITY_NEW_TEST("getSChar");    
+  UNITY_TEST_ASSERT_EQUAL_INT('T', sm.getSChar("charTestN"), __LINE__, "Error on getSChar");
+  UNITY_TEST_ASSERT_EQUAL_INT('T', sm.getSChar("charTestN", 'H'), __LINE__, "Error on getSChar with default value");
+  UNITY_TEST_ASSERT_EQUAL_INT('H', sm.getSChar("noProp", 'H'), __LINE__, "Error on default value getSChar");
+
+  UNITY_NEW_TEST("getUChar");    
+  UNITY_TEST_ASSERT_EQUAL_INT('T', sm.getUChar("charTestN"), __LINE__, "Error on getUChar");
+  UNITY_TEST_ASSERT_EQUAL_INT('T', sm.getUChar("charTestN", 'H'), __LINE__, "Error on getUChar with default value");
+  UNITY_TEST_ASSERT_EQUAL_INT('H', sm.getUChar("noProp", 'H'), __LINE__, "Error on default value getUChar");
+
+  UNITY_NEW_TEST("getChar");    
+  UNITY_TEST_ASSERT_NOT_NULL(sm.getChar("wlan.hostName"), __LINE__, "NullVal");
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getChar("wlan.hostName"), __LINE__, "Error on getChar");
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getChar("wlan.hostName", "defaultHostName"), __LINE__, "Error on getChar with default value");
+  UNITY_TEST_ASSERT_EQUAL_STRING("defaultHostName", sm.getChar("noProp", "defaultHostName"), __LINE__, "Error on default value getChar");
+
+  UNITY_NEW_TEST("getString");    
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getString("wlan.hostName").c_str(), __LINE__, "Error on getString");
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getString("wlan.hostName", "defaultHostName").c_str(), __LINE__, "Error on getString with default value");
+  UNITY_TEST_ASSERT_EQUAL_STRING("defaultHostName", sm.getString("noProp", "defaultHostName").c_str(), __LINE__, "Error on default value getString");
+}
+
 void setup() {
   delay(2000);
-
   UNITY_BEGIN(); // IMPORTANT LINE!
   RUN_TEST(test_ReadSettings);
-  RUN_TEST(test_valueType);
+  RUN_TEST(test_BoolValueType);
+  RUN_TEST(test_NumericValueType);
+  RUN_TEST(test_CharValueType);
   UNITY_END();
 }
 
