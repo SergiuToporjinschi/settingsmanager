@@ -7,6 +7,7 @@
 
 SettingsManager sm;
 
+
 void test_ReadSettings(void) {
   UNITY_TEST_ASSERT_EQUAL_INT(SM_ERROR, sm.readSettings("/NoFile.json"), __LINE__, "File shold not exists");
   UNITY_TEST_ASSERT_EQUAL_INT(SM_SUCCESS, sm.readSettings("/config.json"), __LINE__, "File not in SPIFFS");
