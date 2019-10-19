@@ -84,16 +84,16 @@ void test_CharValueType() {
   UNITY_TEST_ASSERT_EQUAL_INT('T', sm.getUChar("charTestN", 'H'), __LINE__, "Error on getUChar with default value");
   UNITY_TEST_ASSERT_EQUAL_INT('H', sm.getUChar("noProp", 'H'), __LINE__, "Error on default value getUChar");
 
-  // UNITY_NEW_TEST("getCharFromPath");
-  // UNITY_TEST_ASSERT_NOT_NULL(sm.getChar("wlan.hostName"), __LINE__, "NullVal");
-  // UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getChar("wlan.hostName"), __LINE__, "Error on getCharFromPath");
-  // UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getChar("wlan.hostName", "defaultHostName"), __LINE__, "Error on getCharFromPath with default value");
-  // UNITY_TEST_ASSERT_EQUAL_STRING("defaultHostName", sm.getChar("noProp", "defaultHostName"), __LINE__, "Error on default value getCharFromPath");
+  UNITY_NEW_TEST("getCharFromPath");
+  UNITY_TEST_ASSERT_NOT_NULL(sm.getChar("wlan.hostName"), __LINE__, "NullVal");
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getChar("wlan.hostName"), __LINE__, "Error on getCharFromPath");
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getChar("wlan.hostName", "defaultHostName"), __LINE__, "Error on getCharFromPath with default value");
+  UNITY_TEST_ASSERT_EQUAL_STRING("defaultHostName", sm.getChar("noProp", "defaultHostName"), __LINE__, "Error on default value getCharFromPath");
 
-  // UNITY_NEW_TEST("getStringFromPath");
-  // UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getString("wlan.hostName").c_str(), __LINE__, "Error on getStringFromPath");
-  // UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getString("wlan.hostName", "defaultHostName").c_str(), __LINE__, "Error on getStringFromPath with default value");
-  // UNITY_TEST_ASSERT_EQUAL_STRING("defaultHostName", sm.getString("noProp.noProp", "defaultHostName").c_str(), __LINE__, "Error on default value getStringFromPath");
+  UNITY_NEW_TEST("getStringFromPath");
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getString("wlan.hostName").c_str(), __LINE__, "Error on getStringFromPath");
+  UNITY_TEST_ASSERT_EQUAL_STRING("hostName of esp", sm.getString("wlan.hostName", "defaultHostName").c_str(), __LINE__, "Error on getStringFromPath with default value");
+  UNITY_TEST_ASSERT_EQUAL_STRING("defaultHostName", sm.getString("noProp.noProp", "defaultHostName").c_str(), __LINE__, "Error on default value getStringFromPath");
 
   UNITY_NEW_TEST("getChar");
   UNITY_TEST_ASSERT_EQUAL_STRING("url for update", sm.getChar("updateServer"), __LINE__, "Error on getChar");
