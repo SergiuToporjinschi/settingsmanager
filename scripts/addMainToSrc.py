@@ -1,8 +1,9 @@
+import shutil, os
 try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
-import shutil, os
+
 print('########### Run addMainToSrc ###########')
 
 config = configparser.ConfigParser()
