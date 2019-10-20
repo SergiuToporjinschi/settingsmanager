@@ -22,8 +22,12 @@
 
 #include "SettingsManager.h"
 #include "debug_macro.h"
-
-#include "SPIFFS.h"
+#ifdef ARDUINO_ARCH_ESP32
+#  include "SPIFFS.h"
+#endif
+#ifdef ARDUINO_ARCH_ESP8266
+#  include "FS.h"
+#endif
 
 /**
     Reads the content of settings file given by path/name

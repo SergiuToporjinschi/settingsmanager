@@ -23,7 +23,13 @@
 #ifndef SettingsManager_h
 #define SettingsManager_h
 
-#include "FS.h"
+#ifdef ARDUINO_ARCH_ESP32
+#  include "SPIFFS.h"
+#endif
+#ifdef ARDUINO_ARCH_ESP8266
+#  include "FS.h"
+#endif
+
 #include "Macro.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
