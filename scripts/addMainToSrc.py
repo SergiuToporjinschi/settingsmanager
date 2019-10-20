@@ -4,7 +4,7 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-print('########### Run addMainToSrc ###########')
+print('### Run addMainToSrc ########################')
 
 config = configparser.ConfigParser()
 config.read("platformio.ini")
@@ -19,4 +19,4 @@ if os.path.exists(mainPath):
 shutil.copy2(exampleFolder + "/" + os.path.basename(exampleFolder) + '.ino', mainPath)
 
 
-print('########### Finish addMainToSrc ###########')
+print('### Finish addMainToSrc #####################')

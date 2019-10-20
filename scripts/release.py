@@ -7,7 +7,7 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-print('########### Run release script ###########')
+print('### Run release script ########################')
 
 config = configparser.ConfigParser()
 config.read("platformio.ini")
@@ -60,4 +60,4 @@ nf.close()
 os.remove("library.properties")
 os.rename("library_.properties", "library.properties")
 
-print('########### Finish release script ###########')
+print('### Finish release script #####################')
