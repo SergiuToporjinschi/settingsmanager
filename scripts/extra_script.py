@@ -12,9 +12,9 @@ os.makedirs(".pio_compile")
 
 
 for file in glob.iglob('src/*.*'):
-    print 'Copied file %s' % (file)
+    print('Copied file %s' % (file))
     shutil.copy2(file, ".pio_compile")
 
 for file in glob.iglob('examples/**/*.*'):
-    print 'Copied file %s' % (file)
+    print('Copied file %s' % (file))
     shutil.copy2(file, ".pio_compile")

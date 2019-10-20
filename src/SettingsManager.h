@@ -45,10 +45,6 @@ class SettingsManager {
   int writeSettings(const char *fileName);
   int writeSettings(const char *fileName, JsonVariant conf);
 
-  void getVersion(char *fullVersion) {
-    sprintf(fullVersion, "%s(%s)", VER, REV);
-  };
-
   signed int getInt(const char *key, const signed int defaultValue = 0);
   unsigned int getUInt(const char *key, const unsigned int defaultValue = 0);
 

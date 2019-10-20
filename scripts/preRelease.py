@@ -10,7 +10,6 @@ config.read("platformio.ini")
 
 
 exampleFolder = config.get("common", "examples_folder")
-version = config.get("common", "version").replace("\"","")
 mainPath = "src/main.cpp"
 sourcePath = os.getcwd()
 
