@@ -23,17 +23,10 @@
 #ifndef SettingsManager_h
 #define SettingsManager_h
 
-#ifdef ARDUINO_ARCH_ESP32
-#  include "SPIFFS.h"
-#endif
-#ifdef ARDUINO_ARCH_ESP8266
-#  include "FS.h"
-#endif
-
 #include "Macro.h"
+#include <LittleFS.h>   
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <map>
 
 class SettingsManager {
  public:
@@ -43,7 +36,6 @@ class SettingsManager {
     return readSettings(fileName.c_str());
   };
   int writeSettings(const char *fileName);
-  int writeSettings(const char *fileName, JsonVariant conf);
 
   signed int getInt(const char *key, const signed int defaultValue = 0);
   unsigned int getUInt(const char *key, const unsigned int defaultValue = 0);
@@ -58,7 +50,7 @@ class SettingsManager {
   signed char getSChar(const char *key, const signed char defaultValue = '\0');
   unsigned char getUChar(const char *key, const unsigned char defaultValue = '\0');
 
-  const char *getChar(const char *key, const char *defaultValue = '\0');
+  const char *getChar(const char *key, const char *defaultValue = nullptr);
   String getString(const char *key, const String defaultValue = "");
   float getFloat(const char *key, const float defaultValue = 0.0f);
   double getDouble(const char *key, const double defaultValue = (double)(0.0));
@@ -75,18 +67,13 @@ class SettingsManager {
   int setBool(const char *key, const bool value, bool addIfMissing = 1);
 
   JsonVariant getJsonVariant(const char *key, bool addIfMissing = 0);
-  JsonObject getJsonObject(const char *key, bool addIfMissing = 0);
-  JsonArray getJsonArray(const char *key, bool addIfMissing = 0);
 
-  JsonObject getRoot() {
-    return root;
-  };
   int loadJson(const char *payload);
 
  private:
-  DynamicJsonDocument doc = DynamicJsonDocument(1300);
-  JsonObject root;
+  JsonDocument doc;
+  JsonVariant root;
+
   void getFileContent(char *content, File &file);
-  void openSPIFFS();
 };
 #endif

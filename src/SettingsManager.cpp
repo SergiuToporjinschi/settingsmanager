@@ -21,34 +21,24 @@
 */
 
 #include "SettingsManager.h"
-#include "debug_macro.h"
-#ifdef ARDUINO_ARCH_ESP32
-#  include "SPIFFS.h"
-#endif
-#ifdef ARDUINO_ARCH_ESP8266
-#  include "FS.h"
-#endif
 
 /**
     Reads the content of settings file given by path/name
 */
 int SettingsManager::readSettings(const char *fileName) {
-  DBGLN("Reading settings from: %s", fileName);
   unsigned int loaded = SM_SUCCESS;
-  openSPIFFS();
-  File file = SPIFFS.open(fileName, "r");
+  LittleFS.begin();
+  File file = LittleFS.open(fileName, "r");
   if (!file) {
-    DBGLN("Could not open file");
-    SPIFFS.end();
+    LittleFS.end();
     loaded = SM_ERROR;
   } else {
     char js[JSON_LEN] = {0};
     getFileContent(js, file);
     loaded = loadJson(js);
     file.close();
-    SPIFFS.end();
+    LittleFS.end();
   }
-  DBGLN("Closing file");
   return loaded;
 }
 
@@ -56,29 +46,15 @@ int SettingsManager::readSettings(const char *fileName) {
     Writes the content of settings to a file given by path/name
 */
 int SettingsManager::writeSettings(const char *fileName) {
-  return writeSettings(fileName, doc.as<JsonVariant>());
-}
-
-/**
-    Writes the content of settings to a file given by path/name
-*/
-int SettingsManager::writeSettings(const char *fileName, JsonVariant conf) {
-  DBGLN("Writing settings to: %s", fileName);
-  openSPIFFS();
-
-  File file = SPIFFS.open(fileName, "w");
+  File file = LittleFS.open(fileName, "w");
   if (!file) {
-    DBGLN("Could not write in file");
-    SPIFFS.end();
+    LittleFS.end();
     return SM_ERROR;
   } else {
-    serializeJson(conf, file);
-    delay(1000);
-    DBGLN("File written");
+    serializeJson(doc, file);
   }
   file.close();
-  SPIFFS.end();
-  DBGLN("File and SPIFFS closed");
+  LittleFS.end();
   return SM_SUCCESS;
 }
 
@@ -106,10 +82,8 @@ void SettingsManager::getFileContent(char *content, File &file) {
    Loads a json and is stored in json structure
 */
 int SettingsManager::loadJson(const char *payload) {
-  doc.clear();
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
-    DBGLN("Could not deserialize payload: %s", err.c_str());
     return SM_ERROR;
   }
   root = doc.as<JsonVariant>();
@@ -117,26 +91,12 @@ int SettingsManager::loadJson(const char *payload) {
 }
 
 /**
-   Open file
-*/
-void SettingsManager::openSPIFFS() {
-  if (!SPIFFS.begin()) {
-    delay(100);
-    DBGLN("Could not mount SPIFFS file system");
-  } else {
-    DBGLN("SPIFFS file system, open");
-  }
-}
-
-/**
    Returns the JsonVariant of a given key
 */
 JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) {
-  DBGLN("-> Searching for key: %s", key);
-  //Maybe i'm lucky ...
-  JsonVariant val = root.getMember(key);
+ 
+  JsonVariant val = root[key];
   if (!val.isNull()) {
-    DBGLN("Key found in root: %s", key);
     return val;
   }
   char _key[100] = {0};
@@ -146,10 +106,8 @@ JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) 
   //if it does not have any . then is not existing
   if (k == nullptr) {
     if (addIfMissing) {
-      DBGLN("Adding not existing key: %s", key);
-      return root.getOrAddMember(key);
+      return root[key];
     } else {
-      DBGLN("Key not found %s", key);
       return JsonVariant();
     }
   }
@@ -161,59 +119,28 @@ JsonVariant SettingsManager::getJsonVariant(const char *key, bool addIfMissing) 
     //replace the . with \0 to split the string
     k[0] = '\0';
     if (strlen(crs) > 0) {
-      if (!node.getMember(crs).isNull()) {
-        node = node.getMember(crs);
+      if (!node[crs].isNull()) {
+        node = node[crs];
       } else if (!addIfMissing) {
-        DBGLN("Key not found: %s", crs);
         return JsonVariant();
       } else {
-        DBGLN("Adding not existing key: %s", crs);
-        node = node.getOrAddMember(crs);
+        node = node[crs];
       }
     }
     k++;
     crs = k;
     k = strchr(crs, '.');
     if (k == nullptr) {
-      if (node.getMember(crs).isNull() && addIfMissing) {
-        DBGLN("Adding not existing key: %s", crs);
-        node = node.getOrAddMember(crs);
+      if (node[crs].isNull() && addIfMissing) {
+        node = node[crs];
       } else {
-        node = node.getMember(crs);
+        node = node[crs];
       }
       break;
     }
   }
   return node;
 };
-
-/**
-   Returns the JsonObject stored to a specific key
-*/
-JsonObject SettingsManager::getJsonObject(const char *key, bool addIfMissing) {
-  JsonVariant item = getJsonVariant(key, addIfMissing);
-  if (!item.isNull()) {
-    return item.as<JsonObject>();
-  } else if (addIfMissing) {
-    return item.getOrAddMember(key);
-  } else {
-    return JsonObject();
-  }
-}
-
-/**
-   Returns the JsonArray stored to a specific key
-*/
-JsonArray SettingsManager::getJsonArray(const char *key, bool addIfMissing) {
-  JsonVariant item = getJsonVariant(key);
-  if (!item.isNull()) {
-    return item.as<JsonArray>();
-  } else if (addIfMissing) {
-    return item.getOrAddMember(key);
-  } else {
-    return JsonArray();
-  }
-}
 
 signed int SettingsManager::getInt(const char *key, const signed int defaultValue) {
   JsonVariant item = getJsonVariant(key);
@@ -300,7 +227,7 @@ unsigned char SettingsManager::getUChar(const char *key, const unsigned char def
 const char *SettingsManager::getChar(const char *key, const char *defaultValue) {
   JsonVariant item = getJsonVariant(key);
   if (!item.isNull()) {
-    return item.as<char *>();
+    return item.as<const char *>();
   } else {
     return defaultValue;
   }
@@ -347,7 +274,6 @@ int SettingsManager::setInt(const char *key, const signed int value, bool addIfM
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
@@ -357,7 +283,6 @@ int SettingsManager::setShort(const char *key, const signed short value, bool ad
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
@@ -367,17 +292,15 @@ int SettingsManager::setLong(const char *key, const signed long value, bool addI
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
 
-int SettingsManager::setCChar(const char *key, const char value, bool addIfMissing) {
+ int SettingsManager::setCChar(const char *key, const char value, bool addIfMissing) {
   JsonVariant item = getJsonVariant(key, addIfMissing);
   if (addIfMissing || !item.isNull()) {
-    return item.set(value) ? SM_SUCCESS : SM_ERROR;
+    return item.set((unsigned char)value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
@@ -387,7 +310,6 @@ int SettingsManager::setChar(const char *key, const char *value, bool addIfMissi
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
@@ -397,7 +319,6 @@ int SettingsManager::setString(const char *key, const String value, bool addIfMi
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
@@ -407,7 +328,6 @@ int SettingsManager::setFloat(const char *key, const float value, bool addIfMiss
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
@@ -417,7 +337,6 @@ int SettingsManager::setDouble(const char *key, const double value, bool addIfMi
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
@@ -427,7 +346,6 @@ int SettingsManager::setBool(const char *key, const bool value, bool addIfMissin
   if (addIfMissing || !item.isNull()) {
     return item.set(value) ? SM_SUCCESS : SM_ERROR;
   } else {
-    DBGLN("null node");
     return SM_KEY_NOT_FOUND;
   }
 }
